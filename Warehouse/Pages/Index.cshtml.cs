@@ -1,20 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Warehouse.Roles;
 
-namespace Warehouse.Pages
+namespace Warehouse.Pages;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    public bool CoordinatorRoleChosen { get; set; } = false;
+
+    public void OnGet()
     {
-        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-        }
+    }
 
-        public void OnGet()
-        {
+    public IActionResult OnPostCoordinator()
+    {
+        Role.CurrentUserRole = Role.UserRole.Coordinator;
+        CoordinatorRoleChosen = true;
+        return Page();
+        
+    }
 
-        }
+    public IActionResult OnPostEmployee()
+    {
+        Role.CurrentUserRole = Role.UserRole.Employee;
+        return new RedirectToPageResult("Items");
     }
 }
