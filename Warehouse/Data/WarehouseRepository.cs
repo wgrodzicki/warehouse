@@ -51,6 +51,20 @@ public static class WarehouseRepository
         reader.Close();
     }
 
+	/// <summary>
+	/// Deletes an item from the 'items' table based on its id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	public static void DeleteItem(SqliteConnection connection, int itemId)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"DELETE FROM items
+			   WHERE id = {itemId};";
+		tableCmd.ExecuteNonQuery();
+	}
+
     /// <summary>
     /// Pre-populates the 'item_groups' table with sample data.
     /// </summary>
