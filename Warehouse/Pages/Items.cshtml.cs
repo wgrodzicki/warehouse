@@ -11,6 +11,7 @@ public class ItemsModel : PageModel
 {
     [BindProperty] public List<Helpers.Helpers.ItemToDisplay> ItemsToDisplay { get; set; }
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToAdd { get; set; }
+    [BindProperty] public int ItemIdToDelete { get; set; }
     public List<string> ItemGroupNames { get; set; }
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
@@ -91,5 +92,15 @@ public class ItemsModel : PageModel
             WarehouseRepository.AddItem(connection, item);
         }
 	    return OnGet();
+	}
+
+    public IActionResult OnPostDeleteItem()
+    {
+		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        {
+            connection.Open();
+            WarehouseRepository.DeleteItem(connection, ItemIdToDelete);
+        }
+		return OnGet();
 	}
 }

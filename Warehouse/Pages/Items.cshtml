@@ -157,7 +157,10 @@
 											<button class="btn btn-secondary">Edit</button>
 										</td>
 										<td>
-											<button class="btn btn-secondary">Delete</button>
+											<form method="post" asp-page-handler="DeleteItem">
+												<input type="hidden" asp-for="ItemIdToDelete" value="@item.Id">
+												<input type="submit" class="btn btn-secondary" value="Delete">
+											</form>
 										</td>
 									}
 								}
