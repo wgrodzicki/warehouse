@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 using Warehouse.Models;
 using Warehouse.Data;
 using Warehouse.Helpers;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Warehouse.Pages;
 
@@ -11,7 +12,8 @@ public class ItemsModel : PageModel
 {
     [BindProperty] public List<Helpers.Helpers.ItemToDisplay> ItemsToDisplay { get; set; }
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToAdd { get; set; }
-    [BindProperty] public int ItemIdToDelete { get; set; }
+	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToUpdate { get; set; }
+	[BindProperty] public int ItemIdToDelete { get; set; }
     public List<string> ItemGroupNames { get; set; }
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
@@ -24,6 +26,7 @@ public class ItemsModel : PageModel
         _configuration = configuration;
         ItemsToDisplay = new List<Helpers.Helpers.ItemToDisplay>();
 		ItemToAdd = new Helpers.Helpers.ItemToDisplay();
+		ItemToUpdate = new Helpers.Helpers.ItemToDisplay();
 		ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
         AutoOpenAddItemModal = "no";
@@ -63,8 +66,15 @@ public class ItemsModel : PageModel
     {
         if (!ModelState.IsValid)
         {
-			AutoOpenAddItemModal = "yes";
-            return OnGet();
+			// Validate only the Add item form
+			foreach (var state in ModelState)
+			{
+				if (state.Key.Contains("ItemToAdd") && state.Value.ValidationState == ModelValidationState.Invalid)
+                {
+					AutoOpenAddItemModal = "yes";
+					return OnGet();
+				}
+			}
 		}
 		AutoOpenAddItemModal = "no";
 
@@ -103,4 +113,10 @@ public class ItemsModel : PageModel
         }
 		return OnGet();
 	}
+
+    // TODO
+    public IActionResult OnPostEditItem()
+    {
+        return OnGet();
+    }
 }
