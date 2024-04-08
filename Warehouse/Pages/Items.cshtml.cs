@@ -13,6 +13,7 @@ public class ItemsModel : PageModel
     [BindProperty] public List<Helpers.Helpers.ItemToDisplay> ItemsToDisplay { get; set; }
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToAdd { get; set; }
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToUpdate { get; set; }
+	[BindProperty] public RequestModel PurchaseRequest { get; set; }
 	[BindProperty] public int ItemIdToDelete { get; set; }
 	[BindProperty] public string ItemNameToSearchFor { get; set; }
 	[BindProperty] public string SortingMode { get; set; }
@@ -20,6 +21,7 @@ public class ItemsModel : PageModel
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
 	public string AutoOpenEditItemModal { get; set; }
+	public string AutoOpenOrderItemModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
 
 
@@ -31,6 +33,7 @@ public class ItemsModel : PageModel
         ItemsToDisplay = new List<Helpers.Helpers.ItemToDisplay>();
 		ItemToAdd = new Helpers.Helpers.ItemToDisplay();
 		ItemToUpdate = new Helpers.Helpers.ItemToDisplay();
+		PurchaseRequest = new RequestModel();
 		ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
         AutoOpenAddItemModal = "no";
@@ -112,7 +115,6 @@ public class ItemsModel : PageModel
 		}
 		AutoOpenEditItemModal = "no";
 
-
         using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
         {
             connection.Open();
@@ -140,18 +142,30 @@ public class ItemsModel : PageModel
         return OnGet();
     }
 
-	public IActionResult OnPostSearchItem()
+	public IActionResult OnPostOrderItem()
 	{
 		if (!ModelState.IsValid)
 		{
-			// Validate only the Search item form
+			// Validate only the Order item form
 			foreach (var state in ModelState)
 			{
-				if (state.Key.Contains("ItemNameToSearchFor") && state.Value.ValidationState == ModelValidationState.Invalid)
+				if (state.Key.Contains("ItemToOrder") && state.Value.ValidationState == ModelValidationState.Invalid)
 				{
+					AutoOpenOrderItemModal = "yes";
 					return OnGet();
 				}
 			}
+		}
+		AutoOpenOrderItemModal = "no";
+
+		return OnGet();
+	}
+
+	public IActionResult OnPostSearchItem()
+	{
+		if (String.IsNullOrEmpty(ItemNameToSearchFor))
+		{
+			return OnGet();
 		}
 
 		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))

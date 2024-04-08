@@ -8,6 +8,7 @@ public class RequestModel
     public int UnitId { get; set; }
     public int Quantity { get; set; }
     public decimal PriceNoVat { get; set; }
-    public string? Comment { get; set; }
-    public int StatusId { get; set; }
+    public string? CommentEmployee { get; set; }
+	public string? CommentCoordinator { get; set; }
+	public int StatusId { get; set; }
 }
