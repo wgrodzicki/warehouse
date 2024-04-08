@@ -93,9 +93,11 @@
 				</div>
 				<div class="modal-footer text-white">
 					<button type="button" class="btn btn-secondary" id="modal-edit-item-close-btn" data-bs-dismiss="modal">Close</button>
+					<input type="hidden" id="edit-item-id" asp-for="ItemToUpdate.Id" value="" >
 					<input type="submit" value="Confirm" class="btn btn-primary" id="modal-edit-item-confirm" />
 				</div>
 			</form>
+			<input type="hidden" id="modal-edit-item-id-holder" value="@Model.ItemToUpdate.Id" />
 		</div>
 	</div>
 </div>
@@ -196,13 +198,15 @@
 	</div>
 </div>
 
+@* Main part *@
 <div container class="text-center">
 	<div class="row">
 		<div class="col-2">
 			@{
 				if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
 				{
-					<button class="btn btn-primary" id="modal-add-item-trigger" value="@Model.AutoOpenAddItemModal" data-bs-toggle="modal" data-bs-target="#modal-add-item">Add item</button>
+					<button class="btn btn-primary" id="modal-add-item-btn" data-bs-toggle="modal" data-bs-target="#modal-add-item">Add item</button>
+					<input type="hidden" id="modal-add-item-trigger" value="@Model.AutoOpenAddItemModal" />
 				}
 				else
 				{
@@ -211,7 +215,7 @@
 			}	
 		</div>
 		<div class="col-10">
-			<table class="table">
+			<table class="table" id="table-items">
 				<thead>
 					<tr>
 						<th scope="col">Id</th>
@@ -233,9 +237,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					@{
-						foreach (var item in Model.ItemsToDisplay)
+						@foreach (var item in Model.ItemsToDisplay)
 						{
+							Model.TableRowCounter++;
 							<tr>
 								<td>@item.Id</td>
 								<td>@item.Name</td>
@@ -246,23 +250,22 @@
 								<td>@item.Status</td>
 								<td>@item.StorageLocation</td>
 								<td>@item.ContactPerson</td>
-								@{
-									if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
-									{
-										<td>
-											<button class="btn btn-secondary">Edit</button>
-										</td>
-										<td>
-											<form method="post" asp-page-handler="DeleteItem">
-												<input type="hidden" asp-for="ItemIdToDelete" value="@item.Id">
-												<input type="submit" class="btn btn-secondary" value="Delete">
-											</form>
-										</td>
-									}
+
+								@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
+								{
+									<td>
+										<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-edit-item">Edit</button>
+										<input type="hidden" class="modal-edit-trigger" id="@item.Id" value="@Model.AutoOpenEditItemModal" />
+									</td>
+									<td>
+										<form method="post" asp-page-handler="DeleteItem">
+											<input type="hidden" asp-for="ItemIdToDelete" value="@item.Id">
+											<input type="submit" class="btn btn-secondary" value="Delete">
+										</form>
+									</td>
 								}
 							</tr>
 						}
-					}
 				</tbody>
 			</table>
 		</div>

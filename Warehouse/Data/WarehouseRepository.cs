@@ -52,6 +52,87 @@ public static class WarehouseRepository
     }
 
 	/// <summary>
+	/// Retrieves item name from the 'items' table based on item id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
+	public static string GetItemNameByItemId(SqliteConnection connection, int itemId)
+	{
+		string itemName = "";
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT name FROM items
+               WHERE id = {itemId};";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			itemName = reader["name"].ToString();
+		}
+		reader.Close();
+		return itemName;
+	}
+
+	/// <summary>
+	/// Retrieves item group name from the 'items' table based on item id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
+	public static string GetItemGroupNameByItemId(SqliteConnection connection, int itemId)
+	{
+		string itemGroupName = "";
+		var tableCmd = connection.CreateCommand();
+
+		tableCmd.CommandText =
+			@$"SELECT name FROM item_groups
+               WHERE id = (
+			       SELECT item_group_id FROM items
+				   WHERE id = {itemId}
+			   );";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			itemGroupName = reader["item_group_id"].ToString();
+		}
+		reader.Close();
+		return itemGroupName;
+	}
+
+	/// <summary>
+	/// Retrieves unit name from the 'items' table based on item id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
+	public static string GetUnitNameByItemId(SqliteConnection connection, int itemId)
+	{
+		string unitName = "";
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT name FROM units
+               WHERE id = (
+			       SELECT unit_id FROM items
+				   WHERE id = {itemId}
+			   );";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			unitName = reader["unit_id"].ToString();
+		}
+		reader.Close();
+		return unitName;
+	}
+
+	/// <summary>
 	/// Deletes an item from the 'items' table based on its id.
 	/// </summary>
 	/// <param name="connection"></param>
@@ -93,8 +174,7 @@ public static class WarehouseRepository
         SqliteDataReader reader = tableCmd.ExecuteReader();
         while (reader.Read())
         {
-			if (!String.IsNullOrEmpty(reader["name"].ToString()))
-				itemGroupNames.Add(reader["name"].ToString());
+			itemGroupNames.Add(reader["name"].ToString());
         }
         reader.Close();
     }
@@ -105,7 +185,7 @@ public static class WarehouseRepository
 	/// <param name="connection"></param>
 	/// <param name="itemGroupId"></param>
 	/// <returns></returns>
-	public static string GetItemGroupNameById(SqliteConnection connection, int itemGroupId)
+	public static string GetItemGroupNameByItemGroupId(SqliteConnection connection, int itemGroupId)
     {
         string itemGroupName = "";
 
@@ -118,11 +198,7 @@ public static class WarehouseRepository
 		SqliteDataReader reader = tableCmd.ExecuteReader();
 		while (reader.Read())
 		{
-            if (!String.IsNullOrEmpty(reader["name"].ToString()))
-            {
-				itemGroupName = reader["name"].ToString();
-				break;
-			}
+			itemGroupName = reader["name"].ToString();
 		}
 		reader.Close();
 		return itemGroupName;
@@ -134,7 +210,7 @@ public static class WarehouseRepository
     /// <param name="connection"></param>
     /// <param name="itemGroupName"></param>
     /// <returns></returns>
-    public static int GetItemGroupIdByName(SqliteConnection connection, string itemGroupName)
+    public static int GetItemGroupIdByItemGroupName(SqliteConnection connection, string itemGroupName)
     {
         int id = -1;
 
@@ -147,11 +223,7 @@ public static class WarehouseRepository
         SqliteDataReader reader = tableCmd.ExecuteReader();
         while (reader.Read())
         {
-            if (!String.IsNullOrEmpty(reader["id"].ToString()))
-            {
-				id = int.Parse(reader["id"].ToString());
-				break;
-			}
+			id = int.Parse(reader["id"].ToString());
         }
 		reader.Close();
 		return id;
@@ -185,8 +257,7 @@ public static class WarehouseRepository
 		SqliteDataReader reader = tableCmd.ExecuteReader();
 		while (reader.Read())
 		{
-			if (!String.IsNullOrEmpty(reader["name"].ToString()))
-				unitNames.Add(reader["name"].ToString());
+			unitNames.Add(reader["name"].ToString());
 		}
 		reader.Close();
 	}
@@ -197,7 +268,7 @@ public static class WarehouseRepository
 	/// <param name="connection"></param>
 	/// <param name="unitId"></param>
 	/// <returns></returns>
-	public static string GetUnitNameById(SqliteConnection connection, int unitId)
+	public static string GetUnitNameByUnitId(SqliteConnection connection, int unitId)
 	{
 		string unitName = "";
 
@@ -210,11 +281,7 @@ public static class WarehouseRepository
 		SqliteDataReader reader = tableCmd.ExecuteReader();
 		while (reader.Read())
 		{
-			if (!String.IsNullOrEmpty(reader["name"].ToString()))
-			{
-				unitName = reader["name"].ToString();
-				break;
-			}
+			unitName = reader["name"].ToString();
 		}
 		reader.Close();
 		return unitName;
@@ -226,7 +293,7 @@ public static class WarehouseRepository
 	/// <param name="connection"></param>
 	/// <param name="unitName"></param>
 	/// <returns></returns>
-	public static int GetUnitIdByName(SqliteConnection connection, string unitName)
+	public static int GetUnitIdByUnitName(SqliteConnection connection, string unitName)
 	{
 		int id = -1;
 
@@ -239,11 +306,7 @@ public static class WarehouseRepository
 		SqliteDataReader reader = tableCmd.ExecuteReader();
 		while (reader.Read())
 		{
-			if (!String.IsNullOrEmpty(reader["id"].ToString()))
-			{
-				id = int.Parse(reader["id"].ToString());
-				break;
-			}
+			id = int.Parse(reader["id"].ToString());
 		}
 		reader.Close();
 		return id;

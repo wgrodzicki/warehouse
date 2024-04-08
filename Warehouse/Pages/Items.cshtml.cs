@@ -17,6 +17,8 @@ public class ItemsModel : PageModel
     public List<string> ItemGroupNames { get; set; }
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
+	public string AutoOpenEditItemModal { get; set; }
+	public int TableRowCounter { get; set; } = 0;
 
 
 	private IConfiguration _configuration;
@@ -30,7 +32,8 @@ public class ItemsModel : PageModel
 		ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
         AutoOpenAddItemModal = "no";
-    }
+		AutoOpenEditItemModal = "no";
+	}
 
     public IActionResult OnGet()
     {
@@ -46,8 +49,8 @@ public class ItemsModel : PageModel
                 {
                     Id = item.Id,
                     Name = item.Name,
-                    ItemGroup = WarehouseRepository.GetItemGroupNameById(connection, item.ItemGroupId),
-                    Unit = WarehouseRepository.GetUnitNameById(connection, item.UnitId),
+                    ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
+                    Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
                     Quantity = item.Quantity,
                     PriceNoVat = item.PriceNoVat,
                     Status = item.Status,
@@ -81,8 +84,8 @@ public class ItemsModel : PageModel
         using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
         {
             connection.Open();
-            int itemGroupId = WarehouseRepository.GetItemGroupIdByName(connection, ItemToAdd.ItemGroup);
-            int unitId = WarehouseRepository.GetUnitIdByName(connection, ItemToAdd.Unit);
+            int itemGroupId = WarehouseRepository.GetItemGroupIdByItemGroupName(connection, ItemToAdd.ItemGroup);
+            int unitId = WarehouseRepository.GetUnitIdByUnitName(connection, ItemToAdd.Unit);
 
             if (itemGroupId < 0 || unitId < 0)
                 return OnGet();
@@ -115,8 +118,54 @@ public class ItemsModel : PageModel
 	}
 
     // TODO
-    public IActionResult OnPostEditItem()
+    public IActionResult OnPostUpdateItem()
     {
-        return OnGet();
+		if (!ModelState.IsValid)
+		{
+			// Validate only the Edit item form
+			foreach (var state in ModelState)
+			{
+				if (state.Key.Contains("ItemToUpdate") && state.Value.ValidationState == ModelValidationState.Invalid)
+				{
+					AutoOpenEditItemModal = "yes";
+					return OnGet();
+				}
+			}
+		}
+		AutoOpenEditItemModal = "no";
+
+
+		//using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+		//{
+		//	connection.Open();
+
+  //          // Validate name
+  //          if (String.IsNullOrEmpty(ItemToUpdate.Name))
+  //              ItemToUpdate.Name = WarehouseRepository.GetItemNameByItemId(connection, ItemToUpdate.Id);
+
+  //          // Validate item group
+  //          if (String.IsNullOrEmpty(ItemToUpdate.ItemGroup))
+		//		ItemToUpdate.ItemGroup = WarehouseRepository.GetItemGroupNameByItemId(connection, ItemToUpdate.Id);
+
+  //          // Validate unit
+  //          if (String.IsNullOrEmpty(ItemToUpdate.Unit))
+  //              ItemToUpdate.Unit = WarehouseRepository.GetUnitNameByItemId(connection, ItemToUpdate.Id);
+
+  //          // Validate quantity
+
+  //          // Validate price
+  //          // Validate status
+
+  //          //ItemModel updatedItem = new ItemModel
+  //          //{
+  //          //    Id = ItemToUpdate.Id,
+  //          //    Name = ItemToUpdate.Name,
+  //          //    ItemGroupId
+  //          //}
+
+
+		//	//WarehouseRepository.UpdateItem(connection, ItemToUpdate.Id);
+		//}
+		return OnGet();
     }
 }
