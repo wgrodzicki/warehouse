@@ -17,7 +17,6 @@ CREATE TABLE requests (
     id INTEGER NOT NULL UNIQUE,
     item_id INTEGER NOT NULL,
     employee_name TEXT NOT NULL,
-    unit_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     price_no_vat REAL NOT NULL,
     comment_employee TEXT,
@@ -25,7 +24,6 @@ CREATE TABLE requests (
     status_id INTEGER,
     PRIMARY KEY(id AUTOINCREMENT),
     FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
-    FOREIGN KEY(unit_id) REFERENCES units(id) ON DELETE CASCADE,
     FOREIGN KEY(status_id) REFERENCES request_statuses(id)
 );
 
