@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.Sqlite;
 using Warehouse.Models;
@@ -14,7 +14,9 @@ public class ItemsModel : PageModel
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToAdd { get; set; }
 	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToUpdate { get; set; }
 	[BindProperty] public int ItemIdToDelete { get; set; }
-    public List<string> ItemGroupNames { get; set; }
+	[BindProperty] public string ItemNameToSearchFor { get; set; }
+	[BindProperty] public string SortingMode { get; set; }
+	public List<string> ItemGroupNames { get; set; }
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
 	public string AutoOpenEditItemModal { get; set; }
@@ -37,32 +39,9 @@ public class ItemsModel : PageModel
 
     public IActionResult OnGet()
     {
-        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
-        {
-            connection.Open();
-            List<ItemModel> items = new List<ItemModel>();
-            WarehouseRepository.GetAllItems(connection, items);
+		PopulateItems();
 
-            foreach (ItemModel item in items)
-            {
-                ItemsToDisplay.Add(new Helpers.Helpers.ItemToDisplay
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
-                    Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
-                    Quantity = item.Quantity,
-                    PriceNoVat = item.PriceNoVat,
-                    Status = item.Status,
-                    StorageLocation = item.StorageLocation,
-                    ContactPerson = item.ContactPerson,
-                });
-            }
-
-            WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
-            WarehouseRepository.GetUnitNames(connection, UnitNames);
-        }
-        return Page();
+		return Page();
     }
 
     public IActionResult OnPostAddItem()
@@ -160,4 +139,187 @@ public class ItemsModel : PageModel
         }
         return OnGet();
     }
+
+	public IActionResult OnPostSearchItem()
+	{
+		if (!ModelState.IsValid)
+		{
+			// Validate only the Search item form
+			foreach (var state in ModelState)
+			{
+				if (state.Key.Contains("ItemNameToSearchFor") && state.Value.ValidationState == ModelValidationState.Invalid)
+				{
+					return OnGet();
+				}
+			}
+		}
+
+		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+		{
+			connection.Open();
+			List<ItemModel> items = new List<ItemModel>();
+			WarehouseRepository.GetItemsByItemName(connection, ItemNameToSearchFor, items);
+
+			foreach (ItemModel item in items)
+			{
+				ItemsToDisplay.Add(new Helpers.Helpers.ItemToDisplay
+				{
+					Id = item.Id,
+					Name = item.Name,
+					ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
+					Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
+					Quantity = item.Quantity,
+					PriceNoVat = item.PriceNoVat,
+					Status = item.Status,
+					StorageLocation = item.StorageLocation,
+					ContactPerson = item.ContactPerson,
+				});
+			}
+
+			WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
+			WarehouseRepository.GetUnitNames(connection, UnitNames);
+		}
+
+		return Page();
+	}
+
+    public IActionResult OnPostSortId()
+    {
+        PopulateItems();
+
+		if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Id).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Id).ToList();
+
+		return Page();
+    }
+
+	public IActionResult OnPostSortName()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Name).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Name).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortItemGroup()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ItemGroup).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ItemGroup).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortUnit()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Unit).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Unit).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortQuantity()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Quantity).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Quantity).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortPrice()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.PriceNoVat).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.PriceNoVat).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortStatus()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Status).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Status).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortStorage()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.StorageLocation).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.StorageLocation).ToList();
+
+		return Page();
+	}
+
+	public IActionResult OnPostSortContact()
+	{
+		PopulateItems();
+
+		if (SortingMode == "↑")
+			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ContactPerson).ToList();
+		else
+			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ContactPerson).ToList();
+
+		return Page();
+	}
+
+	/// <summary>
+	/// Populates dropdown lists and the list of items to be displayed in the main table.
+	/// </summary>
+	private void PopulateItems()
+    {
+		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+		{
+			connection.Open();
+			List<ItemModel> items = new List<ItemModel>();
+			WarehouseRepository.GetAllItems(connection, items);
+
+			foreach (ItemModel item in items)
+			{
+				ItemsToDisplay.Add(new Helpers.Helpers.ItemToDisplay
+				{
+					Id = item.Id,
+					Name = item.Name,
+					ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
+					Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
+					Quantity = item.Quantity,
+					PriceNoVat = item.PriceNoVat,
+					Status = item.Status,
+					StorageLocation = item.StorageLocation,
+					ContactPerson = item.ContactPerson,
+				});
+			}
+
+			WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
+			WarehouseRepository.GetUnitNames(connection, UnitNames);
+		}
+	}
 }

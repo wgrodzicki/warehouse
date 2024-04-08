@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         checkAutoOpenAddItemModal();
         checkAutoOpenEditItemModal()
+
+        //getSortingMode();
     }
 });
 
@@ -163,3 +165,20 @@ function populateEditModal() {
         });
     }
 }
+
+//function getSortingMode() {
+//    const sortButtons = document.getElementById("table-items").getElementsByClassName("btn-sm");
+//    const sortInputs = document.getElementsByClassName("sort-input");
+
+//    for (let i = 0; i < sortButtons.length; i++) {
+//        sortButtons[i].addEventListener("click", (event) => {
+//            if (sortButtons[i].id.includes("desc")) {
+//                sortInputs[i].value = "desc";
+//            }
+
+//            if (sortButtons[i].id.includes("asc")) {
+//                sortInputs[i].value = "asc";
+//            }
+//        });
+//    }
+//}

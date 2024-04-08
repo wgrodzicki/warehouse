@@ -77,6 +77,39 @@ public static class WarehouseRepository
 	}
 
 	/// <summary>
+	/// Retrieves all items from the 'items' table whose name matches the given name.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemName"></param>
+	/// <param name="items"></param>
+	public static void GetItemsByItemName(SqliteConnection connection, string itemName, List<ItemModel> items)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT * FROM items
+			   WHERE name LIKE '%{itemName}%';";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			items.Add(new ItemModel
+			{
+				Id = int.Parse(reader["id"].ToString()),
+				Name = reader["name"].ToString(),
+				ItemGroupId = int.Parse(reader["item_group_id"].ToString()),
+				UnitId = int.Parse(reader["unit_id"].ToString()),
+				Quantity = int.Parse(reader["quantity"].ToString()),
+				PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString()),
+				Status = reader["status"].ToString(),
+				StorageLocation = reader["storage_location"].ToString(),
+				ContactPerson = reader["contact_person"].ToString()
+			});
+		}
+		reader.Close();
+	}
+
+	/// <summary>
 	/// Retrieves item group name from the 'items' table based on item id.
 	/// </summary>
 	/// <param name="connection"></param>

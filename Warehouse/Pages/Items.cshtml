@@ -212,21 +212,86 @@
 				{
 					<button class="btn btn-primary">Order</button>
 				}
-			}	
+			}
+			<form method="post" asp-page-handler="SearchItem">
+				<div class="form-group">
+					<label asp-for="ItemNameToSearchFor" class="control-label">Search item by name</label>
+					<input type="text" asp-for="ItemNameToSearchFor" class="form-control" />
+					<span asp-validation-for="ItemNameToSearchFor" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Search" class="btn btn-primary" />
+				</div>
+			</form>
+			<a class="btn btn-secondary" asp-area="" asp-page="/Items">Revert</a>
 		</div>
 		<div class="col-10">
 			<table class="table" id="table-items">
 				<thead>
 					<tr>
-						<th scope="col">Id</th>
-						<th scope="col">Name</th>
-						<th scope="col">Item Group</th>
-						<th scope="col">Unit</th>
-						<th scope="col">Quantity</th>
-						<th scope="col">Price (w/o VAT)</th>
-						<th scope="col">Status</th>
-						<th scope="col">Location</th>
-						<th scope="col">Contact Person</th>
+						<th scope="col">
+							Id
+							<form method="post" asp-page-handler="SortId">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Name
+							<form method="post" asp-page-handler="SortName">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Item Group
+							<form method="post" asp-page-handler="SortItemGroup">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Unit
+							<form method="post" asp-page-handler="SortUnit">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Quantity
+							<form method="post" asp-page-handler="SortQuantity">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Price (w/o VAT)
+							<form method="post" asp-page-handler="SortPrice">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Status
+							<form method="post" asp-page-handler="SortStatus">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Location
+							<form method="post" asp-page-handler="SortStorage">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Contact Person
+							<form method="post" asp-page-handler="SortContact">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
 						@{
 							if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
 							{
