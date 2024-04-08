@@ -117,7 +117,6 @@ public class ItemsModel : PageModel
 		return OnGet();
 	}
 
-    // TODO
     public IActionResult OnPostUpdateItem()
     {
 		if (!ModelState.IsValid)
@@ -135,37 +134,30 @@ public class ItemsModel : PageModel
 		AutoOpenEditItemModal = "no";
 
 
-		//using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
-		//{
-		//	connection.Open();
+        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        {
+            connection.Open();
 
-  //          // Validate name
-  //          if (String.IsNullOrEmpty(ItemToUpdate.Name))
-  //              ItemToUpdate.Name = WarehouseRepository.GetItemNameByItemId(connection, ItemToUpdate.Id);
+            int itemGroupId = WarehouseRepository.GetItemGroupIdByItemGroupName(connection, ItemToUpdate.ItemGroup);
+            int unitId = WarehouseRepository.GetUnitIdByUnitName(connection, ItemToUpdate.Unit);
 
-  //          // Validate item group
-  //          if (String.IsNullOrEmpty(ItemToUpdate.ItemGroup))
-		//		ItemToUpdate.ItemGroup = WarehouseRepository.GetItemGroupNameByItemId(connection, ItemToUpdate.Id);
+			if (itemGroupId < 0 || unitId < 0)
+				return OnGet();
 
-  //          // Validate unit
-  //          if (String.IsNullOrEmpty(ItemToUpdate.Unit))
-  //              ItemToUpdate.Unit = WarehouseRepository.GetUnitNameByItemId(connection, ItemToUpdate.Id);
+			ItemModel item = new ItemModel
+			{
+				Name = ItemToUpdate.Name,
+				ItemGroupId = itemGroupId,
+				UnitId = unitId,
+				Quantity = ItemToUpdate.Quantity,
+				PriceNoVat = ItemToUpdate.PriceNoVat,
+				Status = ItemToUpdate.Status,
+				StorageLocation = ItemToUpdate.StorageLocation,
+				ContactPerson = ItemToUpdate.ContactPerson
+			};
 
-  //          // Validate quantity
-
-  //          // Validate price
-  //          // Validate status
-
-  //          //ItemModel updatedItem = new ItemModel
-  //          //{
-  //          //    Id = ItemToUpdate.Id,
-  //          //    Name = ItemToUpdate.Name,
-  //          //    ItemGroupId
-  //          //}
-
-
-		//	//WarehouseRepository.UpdateItem(connection, ItemToUpdate.Id);
-		//}
-		return OnGet();
+			WarehouseRepository.UpdateItem(connection, item, ItemToUpdate.Id);
+        }
+        return OnGet();
     }
 }

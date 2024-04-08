@@ -147,6 +147,29 @@ public static class WarehouseRepository
 	}
 
 	/// <summary>
+	/// Updates item of the given id in the 'items' table with the supplied model data.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="item"></param>
+	/// <param name="itemId"></param>
+	public static void UpdateItem(SqliteConnection connection, ItemModel item, int itemId)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"UPDATE items
+			   SET name = '{item.Name}',
+				   item_group_id = {item.ItemGroupId},
+				   unit_id = {item.UnitId},
+				   quantity = {item.Quantity},
+				   price_no_vat = {item.PriceNoVat},
+				   status = '{item.Status}',
+				   storage_location = '{item.StorageLocation}',
+				   contact_person = '{item.ContactPerson}'
+			   WHERE id = {itemId};";
+		tableCmd.ExecuteNonQuery();
+	}
+
+	/// <summary>
 	/// Pre-populates the 'item_groups' table with sample data.
 	/// </summary>
 	/// <param name="connection"></param>
