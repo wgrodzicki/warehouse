@@ -174,6 +174,8 @@ public class ItemsModel : PageModel
 			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
 			if (statusId > 0)
 				PurchaseRequest.StatusId = statusId;
+			else
+				PurchaseRequest.StatusId = 1;
 
 			WarehouseRepository.AddRequest(connection, PurchaseRequest);
 		}

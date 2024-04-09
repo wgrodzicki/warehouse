@@ -21,10 +21,10 @@ CREATE TABLE requests (
     price_no_vat REAL NOT NULL,
     comment_employee TEXT,
     comment_coordinator TEXT,
-    status_id INTEGER,
+    status_id INTEGER NOT NULL,
     PRIMARY KEY(id AUTOINCREMENT),
     FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE,
-    FOREIGN KEY(status_id) REFERENCES request_statuses(id)
+    FOREIGN KEY(status_id) REFERENCES request_statuses(id) ON DELETE CASCADE
 );
 
 CREATE TABLE item_groups (

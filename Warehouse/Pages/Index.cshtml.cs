@@ -22,16 +22,19 @@ public class IndexModel : PageModel
         {
             connection.Open();
 
+            // Pre-populate item groups
             List<string> itemGroups = new List<string>();
             WarehouseRepository.GetItemGroupNames(connection, itemGroups);
             if (itemGroups.Count == 0)
 				WarehouseRepository.PopulateItemGroups(connection);
 
+			// Pre-populate units
 			List<string> units = new List<string>();
             WarehouseRepository.GetUnitNames(connection, units);
             if (units.Count == 0)
 				WarehouseRepository.PopulateUnits(connection);
 
+			// Pre-populate request statuses
 			List<string> requestStatuses = new List<string>();
 			WarehouseRepository.GetRequestStatusNames(connection, requestStatuses);
 			if (requestStatuses.Count == 0)

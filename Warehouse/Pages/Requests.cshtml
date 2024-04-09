@@ -1,0 +1,116 @@
+﻿@page
+@model Warehouse.Pages.RequestsModel
+@{
+	ViewData["Title"] = "Warehouse - Requests";
+}
+
+@* Main part *@
+<div container class="text-center">
+	<div class="row">
+		<div class="col-2">
+			<form method="post" asp-page-handler="SearchRequest">
+				<div class="form-group">
+					<label asp-for="RequestIdToSearchFor" class="control-label">Search request by ID</label>
+					<input type="number" asp-for="RequestIdToSearchFor" class="form-control" min="0" value="" />
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Search" class="btn btn-primary" />
+				</div>
+			</form>
+			<a class="btn btn-secondary" asp-area="" asp-page="/Requests">Revert</a>
+		</div>
+		<div class="col-10">
+			<table class="table" id="table-requests">
+				<thead>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">
+							ID
+							<form method="post" asp-page-handler="SortId">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Employee name
+							<form method="post" asp-page-handler="SortEmployeeName">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Item
+							<form method="post" asp-page-handler="SortItem">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Unit
+							<form method="post" asp-page-handler="SortUnit">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Quantity
+							<form method="post" asp-page-handler="SortQuantity">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Total price (w/o VAT)
+							<form method="post" asp-page-handler="SortPrice">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Employee Comment
+							<form method="post" asp-page-handler="SortCommentEmployee">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Coordinator Comment
+							<form method="post" asp-page-handler="SortCommentCoordinator">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+						<th scope="col">
+							Status
+							<form method="post" asp-page-handler="SortStatus">
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
+								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
+							</form>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var request in Model.RequestsToDisplay)
+					{
+						Model.TableRowCounter++;
+						<tr>
+							<td>
+								<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@request.Id" data-bs-toggle="modal" data-bs-target="#modal-request">Open</button>
+								<input type="hidden" class="modal-request-trigger" id="@request.Id" value="@Model.AutoOpenRequestModal" />
+							</td>
+							<td>@request.Id</td>
+							<td>@request.EmployeeName</td>
+							<td>@request.Item</td>
+							<td>@request.Unit</td>
+							<td>@request.Quantity</td>
+							<td>@request.TotalPriceNoVat</td>
+							<td>@request.CommentEmployee</td>
+							<td>@request.CommentCoordinator</td>
+							<td>@request.Status</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

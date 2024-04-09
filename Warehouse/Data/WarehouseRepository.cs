@@ -183,7 +183,7 @@ public static class WarehouseRepository
 		SqliteDataReader reader = tableCmd.ExecuteReader();
 		while (reader.Read())
 		{
-			unitName = reader["unit_id"].ToString();
+			unitName = reader["name"].ToString();
 		}
 		reader.Close();
 		return unitName;
@@ -408,6 +408,65 @@ public static class WarehouseRepository
 	}
 
 	/// <summary>
+	/// Retrieves all requests from the 'requests' table.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="requests"></param>
+	public static void GetAllRequests(SqliteConnection connection, List<RequestModel> requests)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@"SELECT * FROM requests;";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			requests.Add(new RequestModel
+			{
+				Id = int.Parse(reader["id"].ToString()),
+				ItemId = int.Parse(reader["item_id"].ToString()),
+				EmployeeName = reader["employee_name"].ToString(),
+				Quantity = int.Parse(reader["quantity"].ToString()),
+				PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString()),
+				CommentEmployee = reader["comment_employee"].ToString(),
+				CommentCoordinator = reader["comment_coordinator"].ToString(),
+				StatusId = int.Parse(reader["status_id"].ToString())
+			});
+		}
+		reader.Close();
+	}
+
+	/// <summary>
+	/// Retrieves request from the 'requests' table based on request id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="requestId"></param>
+	/// <param name="request"></param>
+	public static void GetRequestByRequestId(SqliteConnection connection, int requestId, RequestModel request)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT * FROM requests
+			   WHERE id = {requestId};";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			request.Id = int.Parse(reader["id"].ToString());
+			request.ItemId = int.Parse(reader["item_id"].ToString());
+			request.EmployeeName = reader["employee_name"].ToString();
+			request.Quantity = int.Parse(reader["quantity"].ToString());
+			request.PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString());
+			request.CommentEmployee = reader["comment_employee"].ToString();
+			request.CommentCoordinator = reader["comment_coordinator"].ToString();
+			request.StatusId = int.Parse(reader["status_id"].ToString());
+		}
+		reader.Close();
+	}
+
+	/// <summary>
 	/// Pre-populates the 'request_statuses' table with sample data.
 	/// </summary>
 	/// <param name="connection"></param>
@@ -463,5 +522,30 @@ public static class WarehouseRepository
 		}
 		reader.Close();
 		return id;
+	}
+
+	/// <summary>
+	/// Retrieves request status name from the 'request_statuses' table based on request status id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="requestStatusId"></param>
+	/// <returns></returns>
+	public static string GetRequestStatusNameByRequestStatusId(SqliteConnection connection, int requestStatusId)
+	{
+		string name = "";
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"SELECT name FROM request_statuses
+			   WHERE id = {requestStatusId};";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			name = reader["name"].ToString();
+		}
+		reader.Close();
+		return name;
 	}
 }

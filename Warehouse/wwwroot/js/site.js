@@ -28,6 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
             checkAutoOpenRequestConfirmModal();
         }
     }
+
+    if (document.title == "Warehouse - Requests") {
+
+    }
 });
 
 // Handles selection from the add item item group dropdown.

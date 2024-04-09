@@ -22,4 +22,17 @@ public static class Helpers
 		public string? StorageLocation { get; set; }
 		public string? ContactPerson { get; set; }
 	}
+
+	public class RequestToDisplay
+	{
+		public int Id { get; set; }
+		public string EmployeeName { get; set; }
+		public string Item { get; set; }
+		public string Unit { get; set; }
+		public int Quantity { get; set; }
+		public decimal TotalPriceNoVat { get; set; }
+		public string? CommentEmployee { get; set; }
+		public string? CommentCoordinator { get; set; }
+		public string Status { get; set; }
+	}
 }
