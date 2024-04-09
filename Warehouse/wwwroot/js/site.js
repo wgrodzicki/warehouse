@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
             populateOrderItemModal();
             updatePriceInOrderModal();
             checkAutoOpenOrderItemModal();
+            checkAutoOpenRequestConfirmModal();
         }
     }
 });
@@ -176,6 +177,23 @@ function checkAutoOpenOrderItemModal() {
                 }
             }
         }
+    }
+}
+
+// Automatically opens the request confirmation modal after placing a valid order.
+function checkAutoOpenRequestConfirmModal() {
+    let modalRequestConfirmTrigger = document.getElementById("modal-request-confirm-trigger");
+
+    document.getElementById("modal-request-confirm-close-sign").addEventListener("click", () => {
+        modalRequestConfirmTrigger.value = "no";
+    });
+
+    document.getElementById("modal-request-confirm-close-btn").addEventListener("click", () => {
+        modalRequestConfirmTrigger.value = "no";
+    });
+
+    if (modalRequestConfirmTrigger.value == "yes") {
+        modalRequestConfirmTrigger.click();
     }
 }
 

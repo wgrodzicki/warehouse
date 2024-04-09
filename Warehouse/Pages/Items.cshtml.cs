@@ -23,6 +23,7 @@ public class ItemsModel : PageModel
     public string AutoOpenAddItemModal { get; set; }
 	public string AutoOpenEditItemModal { get; set; }
 	public string AutoOpenOrderItemModal { get; set; }
+	public string AutoOpenRequestConfirmModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
 
 
@@ -31,15 +32,18 @@ public class ItemsModel : PageModel
     public ItemsModel(IConfiguration configuration)
     {
         _configuration = configuration;
+
         ItemsToDisplay = new List<Helpers.Helpers.ItemToDisplay>();
 		ItemToAdd = new Helpers.Helpers.ItemToDisplay();
 		ItemToUpdate = new Helpers.Helpers.ItemToDisplay();
 		PurchaseRequest = new RequestModel();
 		ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
+
         AutoOpenAddItemModal = "no";
 		AutoOpenEditItemModal = "no";
 		AutoOpenOrderItemModal = "no";
+		AutoOpenRequestConfirmModal = "no";
 	}
 
     public IActionResult OnGet()
@@ -159,6 +163,7 @@ public class ItemsModel : PageModel
 			}
 		}
 		AutoOpenOrderItemModal = "no";
+		AutoOpenRequestConfirmModal = "yes";
 
 		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
 		{
@@ -167,9 +172,7 @@ public class ItemsModel : PageModel
 			PurchaseRequest.PriceNoVat = WarehouseRepository.GetItemPriceByItemId(connection, PurchaseRequest.ItemId) * PurchaseRequest.Quantity;
 
 			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
-			if (statusId < 0)
-				PurchaseRequest.StatusId = 1;
-			else
+			if (statusId > 0)
 				PurchaseRequest.StatusId = statusId;
 
 			WarehouseRepository.AddRequest(connection, PurchaseRequest);

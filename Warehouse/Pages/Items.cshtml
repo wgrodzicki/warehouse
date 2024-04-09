@@ -4,8 +4,30 @@
 	ViewData["Title"] = "Warehouse - Items";
 }
 
+@* Request confirm modal *@
+<div class="modal fade" id="modal-request-confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-request-confirm-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modal-request-confirm-label">Order item</h1>
+				<button type="button" class="btn-close" id="modal-request-confirm-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<h3>Request created!</h3>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" id="modal-request-confirm-close-btn" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 @* Order item modal *@
-<div class="modal fade" id="modal-order-item" tabindex="-1" aria-labelledby="modal-order-item-label" aria-hidden="true">
+<div class="modal fade" id="modal-order-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-order-item-label" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="OrderItem">
@@ -67,7 +89,7 @@
 </div>
 
 @* Edit item modal *@
-<div class="modal fade" id="modal-edit-item" tabindex="-1" aria-labelledby="modal-edit-item-label" aria-hidden="true">
+<div class="modal fade" id="modal-edit-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-edit-item-label" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="UpdateItem">
@@ -165,7 +187,7 @@
 </div>
 
 @* Add item modal *@
-<div class="modal fade" id="modal-add-item" tabindex="-1" aria-labelledby="modal-add-item-label" aria-hidden="true">
+<div class="modal fade" id="modal-add-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-add-item-label" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="AddItem">
@@ -398,5 +420,6 @@
 				</tbody>
 			</table>
 		</div>
+		<input type="hidden" id="modal-request-confirm-trigger" value="@Model.AutoOpenRequestConfirmModal" data-bs-toggle="modal" data-bs-target="#modal-request-confirm" />
 	</div>
 </div>
