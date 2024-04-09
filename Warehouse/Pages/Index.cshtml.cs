@@ -31,6 +31,11 @@ public class IndexModel : PageModel
             WarehouseRepository.GetUnitNames(connection, units);
             if (units.Count == 0)
 				WarehouseRepository.PopulateUnits(connection);
+
+			List<string> requestStatuses = new List<string>();
+			WarehouseRepository.GetRequestStatusNames(connection, requestStatuses);
+			if (requestStatuses.Count == 0)
+				WarehouseRepository.PopulateRequestStatuses(connection);
 		}
     }
 

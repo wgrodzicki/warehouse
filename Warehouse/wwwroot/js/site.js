@@ -3,23 +3,103 @@
 
 // Write your JavaScript code.
 
+let pricePerItem = 0;
+
 document.addEventListener("DOMContentLoaded", () => {
 
     if (document.title == "Warehouse - Items") {
-        /*checkAutoOpenAddItemModal();*/
-        getItemGroupFromAddItemDropdown();
-        getUnitFromAddItemDropdown();
+        if (document.getElementById("modal-add-item-btn") != null) {
+            getItemGroupFromAddItemDropdown();
+            getUnitFromAddItemDropdown();
+            checkAutoOpenAddItemModal();
+        }
 
-        getItemGroupFromEditItemDropdown();
-        getUnitFromEditItemDropdown();
-        populateEditModal();
+        if (document.getElementsByClassName("modal-edit-trigger").length >= 0) {
+            getItemGroupFromEditItemDropdown();
+            getUnitFromEditItemDropdown();
+            populateEditModal();
+            checkAutoOpenEditItemModal();
+        }
 
-        checkAutoOpenAddItemModal();
-        checkAutoOpenEditItemModal()
-
-        //getSortingMode();
+        if (document.getElementsByClassName("modal-order-trigger").length >= 0) {
+            populateOrderItemModal();
+            updatePriceInOrderModal();
+            checkAutoOpenOrderItemModal();
+        }
     }
 });
+
+// Handles selection from the add item item group dropdown.
+function getItemGroupFromAddItemDropdown() {
+    const itemGroupDropdownItems = document.getElementById("add-item-group-dropdown").getElementsByClassName("dropdown-item");
+    let itemGroupButton = document.getElementById("add-item-group-dropdown-btn");
+    let itemGroupInput = document.getElementById("add-item-group-input");
+
+    if (itemGroupButton == null || itemGroupInput == null) {
+        return;
+    }
+
+    for (let i = 0; i < itemGroupDropdownItems.length; i++) {
+        itemGroupDropdownItems[i].addEventListener("click", (event) => {
+            itemGroupButton.innerHTML = event.target.innerHTML;
+            itemGroupInput.value = event.target.innerHTML;
+        });
+    }
+}
+
+// Handles selection from the edit item item group dropdown.
+function getItemGroupFromEditItemDropdown() {
+    const itemGroupDropdownItems = document.getElementById("edit-item-group-dropdown").getElementsByClassName("dropdown-item");
+    let itemGroupButton = document.getElementById("edit-item-group-dropdown-btn");
+    let itemGroupInput = document.getElementById("edit-item-group-input");
+
+    if (itemGroupButton == null || itemGroupInput == null) {
+        return;
+    }
+
+    for (let i = 0; i < itemGroupDropdownItems.length; i++) {
+        itemGroupDropdownItems[i].addEventListener("click", (event) => {
+            itemGroupButton.innerHTML = event.target.innerHTML;
+            itemGroupInput.value = event.target.innerHTML;
+        });
+    }
+}
+
+// Handles selection from the edit item unit dropdown.
+function getUnitFromEditItemDropdown() {
+    const unitDropdownItems = document.getElementById("edit-item-unit-dropdown").getElementsByClassName("dropdown-item");
+    let unitButton = document.getElementById("edit-item-unit-dropdown-btn");
+    let unitInput = document.getElementById("edit-item-unit-input");
+
+    if (unitButton == null || unitInput == null) {
+        return;
+    }
+
+    for (let i = 0; i < unitDropdownItems.length; i++) {
+        unitDropdownItems[i].addEventListener("click", (event) => {
+            unitButton.innerHTML = event.target.innerHTML;
+            unitInput.value = event.target.innerHTML;
+        });
+    }
+}
+
+// Handles selection from the add item unit dropdown.
+function getUnitFromAddItemDropdown() {
+    const unitDropdownItems = document.getElementById("add-item-unit-dropdown").getElementsByClassName("dropdown-item");
+    let unitButton = document.getElementById("add-item-unit-dropdown-btn");
+    let unitInput = document.getElementById("add-item-unit-input");
+
+    if (unitButton == null || unitInput == null) {
+        return;
+    }
+
+    for (let i = 0; i < unitDropdownItems.length; i++) {
+        unitDropdownItems[i].addEventListener("click", (event) => {
+            unitButton.innerHTML = event.target.innerHTML;
+            unitInput.value = event.target.innerHTML;
+        });
+    }
+}
 
 // Automatically opens the add item modal after trying to add item with an invalid form.
 function checkAutoOpenAddItemModal() {
@@ -69,75 +149,33 @@ function checkAutoOpenEditItemModal() {
     }
 }
 
-// Handles selection from the add item item group dropdown.
-function getItemGroupFromAddItemDropdown() {
-    const itemGroupDropdownItems = document.getElementById("add-item-group-dropdown").getElementsByClassName("dropdown-item");
-    let itemGroupButton = document.getElementById("add-item-group-dropdown-btn");
-    let itemGroupInput = document.getElementById("add-item-group-input");
+// Automatically opens the appropriate order item modal after trying to place an order with an invalid form.
+function checkAutoOpenOrderItemModal() {
+    const modalOrderItemTriggers = document.getElementById("table-items").getElementsByClassName("modal-order-trigger");
+    let orderButtons = document.getElementById("table-items").getElementsByTagName("button");
+    let modalOrderItemIdHolder = document.getElementById("modal-order-item-id-holder");
 
-    if (itemGroupButton == null || itemGroupInput == null) {
-        return;
-    }
+    document.getElementById("modal-order-item-close-sign").addEventListener("click", () => {
+        for (let i = 0; i < modalOrderItemTriggers.length; i++) {
+            modalOrderItemTriggers[i].value = "no";
+        }
+    });
 
-    for (let i = 0; i < itemGroupDropdownItems.length; i++) {
-        itemGroupDropdownItems[i].addEventListener("click", (event) => {
-            itemGroupButton.innerHTML = event.target.innerHTML;
-            itemGroupInput.value = event.target.innerHTML;
-        });
-    }
-}
+    document.getElementById("modal-order-item-close-btn").addEventListener("click", () => {
+        for (let i = 0; i < modalOrderItemTriggers.length; i++) {
+            modalOrderItemTriggers[i].value = "no";
+        }
+    });
 
-// Handles selection from the add item unit dropdown.
-function getUnitFromAddItemDropdown() {
-    const unitDropdownItems = document.getElementById("add-item-unit-dropdown").getElementsByClassName("dropdown-item");
-    let unitButton = document.getElementById("add-item-unit-dropdown-btn");
-    let unitInput = document.getElementById("add-item-unit-input");
-
-    if (unitButton == null || unitInput == null) {
-        return;
-    }
-
-    for (let i = 0; i < unitDropdownItems.length; i++) {
-        unitDropdownItems[i].addEventListener("click", (event) => {
-            unitButton.innerHTML = event.target.innerHTML;
-            unitInput.value = event.target.innerHTML;
-        });
-    }
-}
-
-// Handles selection from the edit item item group dropdown.
-function getItemGroupFromEditItemDropdown() {
-    const itemGroupDropdownItems = document.getElementById("edit-item-group-dropdown").getElementsByClassName("dropdown-item");
-    let itemGroupButton = document.getElementById("edit-item-group-dropdown-btn");
-    let itemGroupInput = document.getElementById("edit-item-group-input");
-
-    if (itemGroupButton == null || itemGroupInput == null) {
-        return;
-    }
-
-    for (let i = 0; i < itemGroupDropdownItems.length; i++) {
-        itemGroupDropdownItems[i].addEventListener("click", (event) => {
-            itemGroupButton.innerHTML = event.target.innerHTML;
-            itemGroupInput.value = event.target.innerHTML;
-        });
-    }
-}
-
-// Handles selection from the edit item unit dropdown.
-function getUnitFromEditItemDropdown() {
-    const unitDropdownItems = document.getElementById("edit-item-unit-dropdown").getElementsByClassName("dropdown-item");
-    let unitButton = document.getElementById("edit-item-unit-dropdown-btn");
-    let unitInput = document.getElementById("edit-item-unit-input");
-
-    if (unitButton == null || unitInput == null) {
-        return;
-    }
-
-    for (let i = 0; i < unitDropdownItems.length; i++) {
-        unitDropdownItems[i].addEventListener("click", (event) => {
-            unitButton.innerHTML = event.target.innerHTML;
-            unitInput.value = event.target.innerHTML;
-        });
+    for (let i = 0; i < modalOrderItemTriggers.length; i++) {
+        if (modalOrderItemTriggers[i].value == "yes") {
+            for (let j = 0; j < orderButtons.length; j++) {
+                if (orderButtons[j].value == modalOrderItemIdHolder.value) {
+                    orderButtons[j].click();
+                    return;
+                }
+            }
+        }
     }
 }
 
@@ -166,19 +204,35 @@ function populateEditModal() {
     }
 }
 
-//function getSortingMode() {
-//    const sortButtons = document.getElementById("table-items").getElementsByClassName("btn-sm");
-//    const sortInputs = document.getElementsByClassName("sort-input");
+// Populates the order modal with the currently selected item data.
+function populateOrderItemModal() {
+    let itemsTable = document.getElementById("table-items");
+    const orderButtons = itemsTable.getElementsByTagName("button");
 
-//    for (let i = 0; i < sortButtons.length; i++) {
-//        sortButtons[i].addEventListener("click", (event) => {
-//            if (sortButtons[i].id.includes("desc")) {
-//                sortInputs[i].value = "desc";
-//            }
+    for (let i = 0; i < orderButtons.length; i++) {
+        orderButtons[i].addEventListener("click", (event) => {
 
-//            if (sortButtons[i].id.includes("asc")) {
-//                sortInputs[i].value = "asc";
-//            }
-//        });
-//    }
-//}
+            let orderItemRow = event.target.id;
+
+            document.getElementById("order-item-id").value = orderButtons[i].value;
+            document.getElementById("order-item-name").value = itemsTable.rows[orderItemRow].cells[2].innerHTML;
+            document.getElementById("order-item-unit").value = itemsTable.rows[orderItemRow].cells[4].innerHTML;
+            document.getElementById("order-item-quantity").value = itemsTable.rows[orderItemRow].cells[5].innerHTML;
+            document.getElementById("order-item-quantity").max = itemsTable.rows[orderItemRow].cells[5].innerHTML;
+
+            let totalPrice = itemsTable.rows[orderItemRow].cells[5].innerHTML * itemsTable.rows[orderItemRow].cells[6].innerHTML;
+            document.getElementById("order-item-price").value = totalPrice.toFixed(2);
+            pricePerItem = itemsTable.rows[orderItemRow].cells[6].innerHTML;
+        });
+    }
+}
+
+// Updates the total order price in the order modal depending on the quantity input and the original item price.
+function updatePriceInOrderModal() {
+    let quantityInput = document.getElementById("order-item-quantity");
+    let priceInput = document.getElementById("order-item-price");
+
+    quantityInput.addEventListener("change", () => {
+        priceInput.value = (pricePerItem * quantityInput.value).toFixed(2);
+    });
+}

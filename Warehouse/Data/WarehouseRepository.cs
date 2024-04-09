@@ -15,8 +15,8 @@ public static class WarehouseRepository
         var tableCmd = connection.CreateCommand();
         tableCmd.CommandText =
             @$"INSERT INTO items (name, item_group_id, unit_id, quantity, price_no_vat, status, storage_location, contact_person)
-               VALUES('{item.Name}', {item.ItemGroupId}, {item.UnitId}, {item.Quantity},
-                      {item.PriceNoVat}, '{item.Status}', '{item.StorageLocation}', '{item.ContactPerson}');";
+               VALUES ('{item.Name}', {item.ItemGroupId}, {item.UnitId}, {item.Quantity},
+                       {item.PriceNoVat}, '{item.Status}', '{item.StorageLocation}', '{item.ContactPerson}');";
 		tableCmd.ExecuteNonQuery();
 	}
 
@@ -110,6 +110,30 @@ public static class WarehouseRepository
 	}
 
 	/// <summary>
+	/// Retrieves item price from the 'items' table based on item id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
+	public static decimal GetItemPriceByItemId(SqliteConnection connection, int itemId)
+	{
+		decimal price = 0;
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"SELECT price_no_vat FROM items
+			   WHERE id = {itemId};";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			price = decimal.Parse(reader["price_no_vat"].ToString());
+		}
+		reader.Close();
+		return price;
+	}
+
+	/// <summary>
 	/// Retrieves item group name from the 'items' table based on item id.
 	/// </summary>
 	/// <param name="connection"></param>
@@ -118,8 +142,8 @@ public static class WarehouseRepository
 	public static string GetItemGroupNameByItemId(SqliteConnection connection, int itemId)
 	{
 		string itemGroupName = "";
-		var tableCmd = connection.CreateCommand();
 
+		var tableCmd = connection.CreateCommand();
 		tableCmd.CommandText =
 			@$"SELECT name FROM item_groups
                WHERE id = (
@@ -211,7 +235,7 @@ public static class WarehouseRepository
 		var tableCmd = connection.CreateCommand();
 		tableCmd.CommandText =
 			$@"INSERT INTO item_groups (name)
-               VALUES('Group 1'), ('Group 2'), ('Group 3'), ('Group 4'), ('Group 5');";
+               VALUES ('Group 1'), ('Group 2'), ('Group 3'), ('Group 4'), ('Group 5');";
 		tableCmd.ExecuteNonQuery();
 	}
 
@@ -294,7 +318,7 @@ public static class WarehouseRepository
 		var tableCmd = connection.CreateCommand();
 		tableCmd.CommandText =
 			$@"INSERT INTO units (name)
-               VALUES('Unit 1'), ('Unit 2'), ('Unit 3'), ('Unit 4'), ('Unit 5');";
+               VALUES ('Unit 1'), ('Unit 2'), ('Unit 3'), ('Unit 4'), ('Unit 5');";
 		tableCmd.ExecuteNonQuery();
 	}
 
@@ -357,6 +381,79 @@ public static class WarehouseRepository
 		tableCmd.CommandText =
 			@$"SELECT id FROM units
                WHERE name = '{unitName}';";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			id = int.Parse(reader["id"].ToString());
+		}
+		reader.Close();
+		return id;
+	}
+
+	/// <summary>
+	/// Adds new request to the 'requests' table.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="request"></param>
+	public static void AddRequest(SqliteConnection connection, RequestModel request)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"INSERT INTO requests (item_id, employee_name, quantity, price_no_vat, comment_employee, comment_coordinator, status_id)
+			   VALUES ({request.ItemId}, '{request.EmployeeName}', {request.Quantity}, {request.PriceNoVat}, '{request.CommentEmployee}',
+					   '{request.CommentCoordinator}', {request.StatusId});";
+		tableCmd.ExecuteNonQuery();
+	}
+
+	/// <summary>
+	/// Pre-populates the 'request_statuses' table with sample data.
+	/// </summary>
+	/// <param name="connection"></param>
+	public static void PopulateRequestStatuses(SqliteConnection connection)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"INSERT INTO request_statuses (name)
+               VALUES ('New'), ('Accepted'), ('Rejected');";
+		tableCmd.ExecuteNonQuery();
+	}
+
+	/// <summary>
+	/// Retrieves all request status names from the 'request_statuses' table.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="requestStatusNames"></param>
+	public static void GetRequestStatusNames(SqliteConnection connection, List<string> requestStatusNames)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@"SELECT name FROM request_statuses;";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			requestStatusNames.Add(reader["name"].ToString());
+		}
+		reader.Close();
+	}
+
+	/// <summary>
+	/// Retrieves request status id from the 'request_statuses' table based on request status name.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="requestStatusName"></param>
+	/// <returns></returns>
+	public static int GetRequestStatusIdByRequestStatusName(SqliteConnection connection, string requestStatusName)
+	{
+		int id = -1;
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"SELECT id FROM request_statuses
+			   WHERE name = '{requestStatusName}';";
 		tableCmd.CommandType = System.Data.CommandType.Text;
 
 		SqliteDataReader reader = tableCmd.ExecuteReader();

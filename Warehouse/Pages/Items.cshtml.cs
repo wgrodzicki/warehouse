@@ -17,6 +17,7 @@ public class ItemsModel : PageModel
 	[BindProperty] public int ItemIdToDelete { get; set; }
 	[BindProperty] public string ItemNameToSearchFor { get; set; }
 	[BindProperty] public string SortingMode { get; set; }
+
 	public List<string> ItemGroupNames { get; set; }
 	public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
@@ -38,6 +39,7 @@ public class ItemsModel : PageModel
         UnitNames = new List<string>();
         AutoOpenAddItemModal = "no";
 		AutoOpenEditItemModal = "no";
+		AutoOpenOrderItemModal = "no";
 	}
 
     public IActionResult OnGet()
@@ -149,7 +151,7 @@ public class ItemsModel : PageModel
 			// Validate only the Order item form
 			foreach (var state in ModelState)
 			{
-				if (state.Key.Contains("ItemToOrder") && state.Value.ValidationState == ModelValidationState.Invalid)
+				if (state.Key.Contains("PurchaseRequest") && state.Value.ValidationState == ModelValidationState.Invalid)
 				{
 					AutoOpenOrderItemModal = "yes";
 					return OnGet();
@@ -157,6 +159,21 @@ public class ItemsModel : PageModel
 			}
 		}
 		AutoOpenOrderItemModal = "no";
+
+		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+		{
+			connection.Open();
+
+			PurchaseRequest.PriceNoVat = WarehouseRepository.GetItemPriceByItemId(connection, PurchaseRequest.ItemId) * PurchaseRequest.Quantity;
+
+			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
+			if (statusId < 0)
+				PurchaseRequest.StatusId = 1;
+			else
+				PurchaseRequest.StatusId = statusId;
+
+			WarehouseRepository.AddRequest(connection, PurchaseRequest);
+		}
 
 		return OnGet();
 	}
