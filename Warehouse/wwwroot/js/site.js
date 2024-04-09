@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (document.title == "Warehouse - Requests") {
-
+        getStatusFromRequestModalDropdown();
+        populateRequestModal();
     }
 });
 
@@ -102,6 +103,24 @@ function getUnitFromAddItemDropdown() {
         unitDropdownItems[i].addEventListener("click", (event) => {
             unitButton.innerHTML = event.target.innerHTML;
             unitInput.value = event.target.innerHTML;
+        });
+    }
+}
+
+// Handles selection from the request status dropdown.
+function getStatusFromRequestModalDropdown() {
+    const statusDropdownItems = document.getElementById("request-status-dropdown").getElementsByClassName("dropdown-item");
+    let statusButton = document.getElementById("request-status-dropdown-btn");
+    let statusInput = document.getElementById("request-status-input");
+
+    if (statusButton == null || statusInput == null) {
+        return;
+    }
+
+    for (let i = 0; i < statusDropdownItems.length; i++) {
+        statusDropdownItems[i].addEventListener("click", (event) => {
+            statusButton.innerHTML = event.target.innerHTML;
+            statusInput.value = event.target.innerHTML;
         });
     }
 }
@@ -257,4 +276,28 @@ function updatePriceInOrderModal() {
     quantityInput.addEventListener("change", () => {
         priceInput.value = (pricePerItem * quantityInput.value).toFixed(2);
     });
+}
+
+// Populates the request modal with the currently selected request data.
+function populateRequestModal() {
+    let requestsTable = document.getElementById("table-requests");
+    const openButtons = requestsTable.getElementsByTagName("button");
+
+    for (let i = 0; i < openButtons.length; i++) {
+        openButtons[i].addEventListener("click", (event) => {
+
+            let openRequestRow = event.target.id;
+
+            document.getElementById("request-id").value = openButtons[i].value;
+            document.getElementById("request-employee-name").value = requestsTable.rows[openRequestRow].cells[2].innerHTML;
+            document.getElementById("request-item").value = requestsTable.rows[openRequestRow].cells[3].innerHTML;
+            document.getElementById("request-unit").value = requestsTable.rows[openRequestRow].cells[4].innerHTML;
+            document.getElementById("request-quantity").value = requestsTable.rows[openRequestRow].cells[5].innerHTML;
+            document.getElementById("request-price").value = requestsTable.rows[openRequestRow].cells[6].innerHTML;
+            document.getElementById("request-comment-employee").value = requestsTable.rows[openRequestRow].cells[7].innerHTML;
+            document.getElementById("request-comment-coordinator").value = requestsTable.rows[openRequestRow].cells[8].innerHTML;
+            document.getElementById("request-status-input").value = requestsTable.rows[openRequestRow].cells[9].innerHTML;
+            document.getElementById("request-status-dropdown-btn").innerHTML = requestsTable.rows[openRequestRow].cells[9].innerHTML;
+        });
+    }
 }

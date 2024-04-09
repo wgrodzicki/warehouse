@@ -56,17 +56,17 @@
 											<span asp-validation-for="PurchaseRequest.EmployeeName" class="text-danger"></span>
 										</td>
 										<td>
-											<input type="text" class="form-control" id="order-item-name" disabled />
+											<input type="text" class="form-control" id="order-item-name" readonly />
 										</td>
 										<td>
-											<input type="text" class="form-control" id="order-item-unit" disabled />
+											<input type="text" class="form-control" id="order-item-unit" readonly />
 										</td>
 										<td>
 											<input type="number" asp-for="PurchaseRequest.Quantity" class="form-control" id="order-item-quantity" min="1" />
 											<span asp-validation-for="PurchaseRequest.Quantity" class="text-danger"></span>
 										</td>
 										<td>
-											<input type="number" step="0.01" class="form-control" id="order-item-price" min="0.01" disabled />
+											<input type="number" step="0.01" class="form-control" id="order-item-price" min="0.01" readonly />
 										</td>
 										<td>
 											<input type="text" asp-for="PurchaseRequest.CommentEmployee" class="form-control" id="order-item-comment-employee" />
@@ -131,7 +131,6 @@
 													}
 												</ul>
 												<input type="hidden" asp-for="ItemToUpdate.ItemGroup" class="form-control" id="edit-item-group-input" value="" />
-												<span asp-validation-for="ItemToUpdate.ItemGroup" class="text-danger"></span>
 											</div>
 										</td>
 										<td>
@@ -146,7 +145,6 @@
 													}
 												</ul>
 												<input type="hidden" asp-for="ItemToUpdate.Unit" class="form-control" id="edit-item-unit-input" value="" />
-												<span asp-validation-for="ItemToUpdate.Unit" class="text-danger"></span>
 											</div>
 										</td>
 										<td>

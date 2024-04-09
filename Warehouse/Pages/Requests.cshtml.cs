@@ -9,10 +9,11 @@ namespace Warehouse.Pages;
 
 public class RequestsModel : PageModel
 {
-	[BindProperty] public List<Helpers.Helpers.RequestToDisplay> RequestsToDisplay { get; set; }
+	[BindProperty] public List<RequestToDisplay> RequestsToDisplay { get; set; }
+	[BindProperty] public RequestToDisplay RequestToManage { get; set; }
 	[BindProperty] public int RequestIdToSearchFor { get; set; }
 	[BindProperty] public string SortingMode { get; set; }
-
+	public List<string> RequestStatusNames { get; set; }
 	public string AutoOpenRequestModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
 
@@ -22,7 +23,10 @@ public class RequestsModel : PageModel
 	{
 		_configuration = configuration;
 
-		RequestsToDisplay = new List<Helpers.Helpers.RequestToDisplay>();
+		RequestsToDisplay = new List<RequestToDisplay>();
+		RequestToManage = new RequestToDisplay();
+		RequestStatusNames = new List<string>();
+
 		AutoOpenRequestModal = "no";
 	}
 
@@ -31,6 +35,35 @@ public class RequestsModel : PageModel
 		PopulateRequests();
 		return Page();
     }
+
+	public IActionResult OnPostManageRequest()
+	{
+		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+		{
+			connection.Open();
+
+			int itemId = WarehouseRepository.GetItemIdByItemName(connection, RequestToManage.Item);
+			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, RequestToManage.Status);
+
+			if (itemId < 0 || statusId < 0)
+				return OnGet();
+
+			RequestModel request = new RequestModel
+			{
+				Id = RequestToManage.Id,
+				ItemId = itemId,
+				EmployeeName = RequestToManage.EmployeeName,
+				Quantity = RequestToManage.Quantity,
+				PriceNoVat = RequestToManage.TotalPriceNoVat,
+				CommentEmployee = RequestToManage.CommentEmployee,
+				CommentCoordinator = RequestToManage.CommentCoordinator,
+				StatusId = statusId
+			};
+
+			WarehouseRepository.UpdateRequest(connection, request, RequestToManage.Id);
+		}
+		return OnGet();
+	}
 
 	public IActionResult OnPostSearchRequest()
 	{
@@ -57,6 +90,8 @@ public class RequestsModel : PageModel
 				CommentCoordinator = request.CommentCoordinator,
 				Status = WarehouseRepository.GetRequestStatusNameByRequestStatusId(connection, request.StatusId)
 			});
+
+			WarehouseRepository.GetRequestStatusNames(connection, RequestStatusNames);
 		}
 
 		if (RequestsToDisplay[0].Id <= 0)
@@ -174,7 +209,7 @@ public class RequestsModel : PageModel
 
 			foreach (RequestModel request in requests)
 			{
-				RequestsToDisplay.Add(new Helpers.Helpers.RequestToDisplay
+				RequestsToDisplay.Add(new RequestToDisplay
 				{
 					Id = request.Id,
 					EmployeeName = request.EmployeeName,
@@ -187,6 +222,8 @@ public class RequestsModel : PageModel
 					Status = WarehouseRepository.GetRequestStatusNameByRequestStatusId(connection, request.StatusId)
 				});
 			}
+
+			WarehouseRepository.GetRequestStatusNames(connection, RequestStatusNames);
 		}
 	}
 }

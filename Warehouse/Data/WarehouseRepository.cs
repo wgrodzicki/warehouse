@@ -77,6 +77,31 @@ public static class WarehouseRepository
 	}
 
 	/// <summary>
+	/// Retrieves item id from the 'items' table based on item name.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemName"></param>
+	/// <returns></returns>
+	public static int GetItemIdByItemName(SqliteConnection connection, string itemName)
+	{
+		int id = -1;
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT id FROM items
+               WHERE name = '{itemName}';";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			id = int.Parse(reader["id"].ToString());
+		}
+		reader.Close();
+		return id;
+	}
+
+	/// <summary>
 	/// Retrieves all items from the 'items' table whose name matches the given name.
 	/// </summary>
 	/// <param name="connection"></param>
@@ -118,6 +143,7 @@ public static class WarehouseRepository
 	public static decimal GetItemPriceByItemId(SqliteConnection connection, int itemId)
 	{
 		decimal price = 0;
+
 		var tableCmd = connection.CreateCommand();
 		tableCmd.CommandText =
 			$@"SELECT price_no_vat FROM items
@@ -464,6 +490,28 @@ public static class WarehouseRepository
 			request.StatusId = int.Parse(reader["status_id"].ToString());
 		}
 		reader.Close();
+	}
+
+	/// <summary>
+	/// Updates request of the given id in the 'requests' table with the supplied model data.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="request"></param>
+	/// <param name="requestId"></param>
+	public static void UpdateRequest(SqliteConnection connection, RequestModel request, int requestId)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"UPDATE requests
+			   SET item_id = {request.ItemId},
+				   employee_name = '{request.EmployeeName}',
+				   quantity = {request.Quantity},
+				   price_no_vat = {request.PriceNoVat},
+				   comment_employee = '{request.CommentEmployee}',
+				   comment_coordinator = '{request.CommentCoordinator}',
+				   status_id = {request.StatusId}
+			   WHERE id = {requestId};";
+		tableCmd.ExecuteNonQuery();
 	}
 
 	/// <summary>

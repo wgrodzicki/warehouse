@@ -3,16 +3,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.Sqlite;
 using Warehouse.Models;
 using Warehouse.Data;
-using Warehouse.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using static Warehouse.Helpers.Helpers;
 
 namespace Warehouse.Pages;
 
 public class ItemsModel : PageModel
 {
-    [BindProperty] public List<Helpers.Helpers.ItemToDisplay> ItemsToDisplay { get; set; }
-	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToAdd { get; set; }
-	[BindProperty] public Helpers.Helpers.ItemToDisplay ItemToUpdate { get; set; }
+    [BindProperty] public List<ItemToDisplay> ItemsToDisplay { get; set; }
+	[BindProperty] public ItemToDisplay ItemToAdd { get; set; }
+	[BindProperty] public ItemToDisplay ItemToUpdate { get; set; }
 	[BindProperty] public RequestModel PurchaseRequest { get; set; }
 	[BindProperty] public int ItemIdToDelete { get; set; }
 	[BindProperty] public string ItemNameToSearchFor { get; set; }
@@ -33,9 +33,9 @@ public class ItemsModel : PageModel
     {
         _configuration = configuration;
 
-        ItemsToDisplay = new List<Helpers.Helpers.ItemToDisplay>();
-		ItemToAdd = new Helpers.Helpers.ItemToDisplay();
-		ItemToUpdate = new Helpers.Helpers.ItemToDisplay();
+        ItemsToDisplay = new List<ItemToDisplay>();
+		ItemToAdd = new ItemToDisplay();
+		ItemToUpdate = new ItemToDisplay();
 		PurchaseRequest = new RequestModel();
 		ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
@@ -172,6 +172,7 @@ public class ItemsModel : PageModel
 			PurchaseRequest.PriceNoVat = WarehouseRepository.GetItemPriceByItemId(connection, PurchaseRequest.ItemId) * PurchaseRequest.Quantity;
 
 			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
+
 			if (statusId > 0)
 				PurchaseRequest.StatusId = statusId;
 			else
@@ -198,7 +199,7 @@ public class ItemsModel : PageModel
 
 			foreach (ItemModel item in items)
 			{
-				ItemsToDisplay.Add(new Helpers.Helpers.ItemToDisplay
+				ItemsToDisplay.Add(new ItemToDisplay
 				{
 					Id = item.Id,
 					Name = item.Name,
@@ -340,7 +341,7 @@ public class ItemsModel : PageModel
 
 			foreach (ItemModel item in items)
 			{
-				ItemsToDisplay.Add(new Helpers.Helpers.ItemToDisplay
+				ItemsToDisplay.Add(new ItemToDisplay
 				{
 					Id = item.Id,
 					Name = item.Name,
