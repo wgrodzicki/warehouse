@@ -3,6 +3,8 @@
 public static class Helpers
 {
 	public static UserRole CurrentUserRole { get; set; }
+	public static List<ItemToDisplay> CurrentlyDisplayedItems { get; set; }
+	public static List<RequestToDisplay> CurrentlyDisplayedRequests { get; set; }
 
 	public enum UserRole
 	{

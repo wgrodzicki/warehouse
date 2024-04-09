@@ -1,5 +1,7 @@
 ﻿using Warehouse.Models;
 using Microsoft.Data.Sqlite;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
 
 namespace Warehouse.Data;
 
@@ -52,6 +54,72 @@ public static class WarehouseRepository
     }
 
 	/// <summary>
+	/// Retrieves all items from the 'items' table whose name matches the given name.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemName"></param>
+	/// <param name="items"></param>
+	public static void GetItemsByItemName(SqliteConnection connection, string itemName, List<ItemModel> items)
+	{
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			@$"SELECT * FROM items
+			   WHERE name LIKE '%{itemName}%';";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			items.Add(new ItemModel
+			{
+				Id = int.Parse(reader["id"].ToString()),
+				Name = reader["name"].ToString(),
+				ItemGroupId = int.Parse(reader["item_group_id"].ToString()),
+				UnitId = int.Parse(reader["unit_id"].ToString()),
+				Quantity = int.Parse(reader["quantity"].ToString()),
+				PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString()),
+				Status = reader["status"].ToString(),
+				StorageLocation = reader["storage_location"].ToString(),
+				ContactPerson = reader["contact_person"].ToString()
+			});
+		}
+		reader.Close();
+	}
+
+	/// <summary>
+	/// Retrieves item from the 'items' table based on item id.
+	/// </summary>
+	/// <param name="connection"></param>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
+	public static ItemModel GetItemByItemId(SqliteConnection connection, int itemId)
+	{
+		ItemModel item = new ItemModel();
+
+		var tableCmd = connection.CreateCommand();
+		tableCmd.CommandText =
+			$@"SELECT * FROM items
+			   WHERE id = {itemId};";
+		tableCmd.CommandType = System.Data.CommandType.Text;
+
+		SqliteDataReader reader = tableCmd.ExecuteReader();
+		while (reader.Read())
+		{
+			item.Id = int.Parse(reader["id"].ToString());
+			item.Name = reader["name"].ToString();
+			item.ItemGroupId = int.Parse(reader["item_group_id"].ToString());
+			item.UnitId = int.Parse(reader["unit_id"].ToString());
+			item.Quantity = int.Parse(reader["quantity"].ToString());
+			item.PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString());
+			item.Status = reader["status"].ToString();
+			item.StorageLocation = reader["storage_location"].ToString();
+			item.ContactPerson = reader["contact_person"].ToString();
+		}
+		reader.Close();
+		return item;
+	}
+
+	/// <summary>
 	/// Retrieves item name from the 'items' table based on item id.
 	/// </summary>
 	/// <param name="connection"></param>
@@ -99,39 +167,6 @@ public static class WarehouseRepository
 		}
 		reader.Close();
 		return id;
-	}
-
-	/// <summary>
-	/// Retrieves all items from the 'items' table whose name matches the given name.
-	/// </summary>
-	/// <param name="connection"></param>
-	/// <param name="itemName"></param>
-	/// <param name="items"></param>
-	public static void GetItemsByItemName(SqliteConnection connection, string itemName, List<ItemModel> items)
-	{
-		var tableCmd = connection.CreateCommand();
-		tableCmd.CommandText =
-			@$"SELECT * FROM items
-			   WHERE name LIKE '%{itemName}%';";
-		tableCmd.CommandType = System.Data.CommandType.Text;
-
-		SqliteDataReader reader = tableCmd.ExecuteReader();
-		while (reader.Read())
-		{
-			items.Add(new ItemModel
-			{
-				Id = int.Parse(reader["id"].ToString()),
-				Name = reader["name"].ToString(),
-				ItemGroupId = int.Parse(reader["item_group_id"].ToString()),
-				UnitId = int.Parse(reader["unit_id"].ToString()),
-				Quantity = int.Parse(reader["quantity"].ToString()),
-				PriceNoVat = decimal.Parse(reader["price_no_vat"].ToString()),
-				Status = reader["status"].ToString(),
-				StorageLocation = reader["storage_location"].ToString(),
-				ContactPerson = reader["contact_person"].ToString()
-			});
-		}
-		reader.Close();
 	}
 
 	/// <summary>

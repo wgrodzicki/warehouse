@@ -50,6 +50,8 @@ public class ItemsModel : PageModel
     {
 		PopulateItems();
 
+		CurrentlyDisplayedItems = ItemsToDisplay;
+
 		return Page();
     }
 
@@ -217,12 +219,14 @@ public class ItemsModel : PageModel
 			WarehouseRepository.GetUnitNames(connection, UnitNames);
 		}
 
+		CurrentlyDisplayedItems = ItemsToDisplay;
+
 		return Page();
 	}
 
     public IActionResult OnPostSortId()
     {
-        PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
             ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Id).ToList();
@@ -234,7 +238,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortName()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Name).ToList();
@@ -246,7 +250,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortItemGroup()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ItemGroup).ToList();
@@ -258,7 +262,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortUnit()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Unit).ToList();
@@ -270,7 +274,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortQuantity()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Quantity).ToList();
@@ -282,7 +286,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortPrice()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.PriceNoVat).ToList();
@@ -294,7 +298,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortStatus()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Status).ToList();
@@ -306,7 +310,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortStorage()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.StorageLocation).ToList();
@@ -318,7 +322,7 @@ public class ItemsModel : PageModel
 
 	public IActionResult OnPostSortContact()
 	{
-		PopulateItems();
+		ItemsToDisplay = CurrentlyDisplayedItems;
 
 		if (SortingMode == "↑")
 			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ContactPerson).ToList();

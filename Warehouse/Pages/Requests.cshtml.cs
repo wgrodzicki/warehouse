@@ -33,6 +33,9 @@ public class RequestsModel : PageModel
 	public IActionResult OnGet()
     {
 		PopulateRequests();
+
+		CurrentlyDisplayedRequests = RequestsToDisplay;
+
 		return Page();
     }
 
@@ -61,6 +64,28 @@ public class RequestsModel : PageModel
 			};
 
 			WarehouseRepository.UpdateRequest(connection, request, RequestToManage.Id);
+
+			switch (RequestToManage.Status)
+			{
+				case "Accepted":
+					break;
+				case "New":
+					return OnGet();
+				case "Rejected":
+					return OnGet();
+				default:
+					return OnGet();
+			}
+
+			// Reduce the available quantity of the item
+			ItemModel itemToUpdate = WarehouseRepository.GetItemByItemId(connection, request.ItemId);
+			itemToUpdate.Quantity -= request.Quantity;
+
+			// Delete item if sold out
+			if (itemToUpdate.Quantity <= 0)
+				WarehouseRepository.DeleteItem(connection, request.ItemId);
+
+			WarehouseRepository.UpdateItem(connection, itemToUpdate, request.ItemId);
 		}
 		return OnGet();
 	}
@@ -97,12 +122,14 @@ public class RequestsModel : PageModel
 		if (RequestsToDisplay[0].Id <= 0)
 			RequestsToDisplay.Clear();
 
+		CurrentlyDisplayedRequests = RequestsToDisplay;
+
 		return Page();
 	}
 
 	public IActionResult OnPostSortId()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.Id).ToList();
@@ -113,7 +140,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortEmployeeName()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.EmployeeName).ToList();
@@ -124,7 +151,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortItem()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.Item).ToList();
@@ -135,7 +162,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortUnit()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.Unit).ToList();
@@ -146,7 +173,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortQuantity()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.Quantity).ToList();
@@ -157,7 +184,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortPrice()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.TotalPriceNoVat).ToList();
@@ -168,7 +195,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortCommentEmployee()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.CommentEmployee).ToList();
@@ -179,7 +206,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortCommentCoordinator()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.CommentCoordinator).ToList();
@@ -190,7 +217,7 @@ public class RequestsModel : PageModel
 
 	public IActionResult OnPostSortStatus()
 	{
-		PopulateRequests();
+		RequestsToDisplay = CurrentlyDisplayedRequests;
 
 		if (SortingMode == "↑")
 			RequestsToDisplay = RequestsToDisplay.OrderBy(x => x.Status).ToList();
