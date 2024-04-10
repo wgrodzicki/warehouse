@@ -1,10 +1,11 @@
 ﻿using Warehouse.Models;
 using Microsoft.Data.Sqlite;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
 
 namespace Warehouse.Data;
 
+/// <summary>
+/// Provides methods to manipulate tables in the Warehouse database.
+/// </summary>
 public static class WarehouseRepository
 {
     /// <summary>

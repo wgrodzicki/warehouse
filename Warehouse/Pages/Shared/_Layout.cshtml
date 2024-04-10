@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/Warehouse.styles.css" asp-append-version="true" />
 </head>
 <body>
+
+    @* Navbar *@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3" id="navbar">
             <div class="container">
@@ -41,12 +43,15 @@
             </div>
         </nav>
     </header>
+
+    @* Main part *@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
+    @* Footer *@
     <footer class="footer text-muted">
         <div class="container">
             &copy; 2024 - Warehouse - by Wojciech Grodzicki

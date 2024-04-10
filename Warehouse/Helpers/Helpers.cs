@@ -1,5 +1,8 @@
 ﻿namespace Warehouse.Helpers;
 
+/// <summary>
+/// Containes helper static fields.
+/// </summary>
 public static class Helpers
 {
 	public static UserRole CurrentUserRole { get; set; } = UserRole.None;
@@ -14,6 +17,9 @@ public static class Helpers
 		Employee
 	}
 
+	/// <summary>
+	/// Displayed representation of the ItemModel.
+	/// </summary>
 	public class ItemToDisplay
 	{
 		public int Id { get; set; }
@@ -27,6 +33,9 @@ public static class Helpers
 		public string? ContactPerson { get; set; }
 	}
 
+	/// <summary>
+	/// Displayed representation of the RequestModel.
+	/// </summary>
 	public class RequestToDisplay
 	{
 		public int Id { get; set; }

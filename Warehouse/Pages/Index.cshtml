@@ -7,7 +7,6 @@
 <div container id="main-container-index" class="text-center">
     <div class="row justify-content-center">
         <div class="col-12">
-            @* @if (!Model.CoordinatorRoleChosen) *@
             @if (Helpers.Helpers.CurrentUserRole != Helpers.Helpers.UserRole.Coordinator)
             {
                 <h3 class="greeting">Welcome to the Warehouse!</h3>
@@ -20,7 +19,6 @@
     </div>
     <br />
     @{
-        // if (!Model.CoordinatorRoleChosen)
         if (Helpers.Helpers.CurrentUserRole != Helpers.Helpers.UserRole.Coordinator)
         {
             <div class="row justify-content-center">
@@ -43,7 +41,6 @@
             </div>
         }
         else
-        // else if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
         {
             <div class="row justify-content-center">
                 <div class="col-12">

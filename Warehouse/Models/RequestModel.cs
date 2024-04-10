@@ -1,5 +1,8 @@
 ﻿namespace Warehouse.Models;
 
+/// <summary>
+/// Represents a row in the 'requests' table.
+/// </summary>
 public class RequestModel
 {
     public int Id { get; set; }
