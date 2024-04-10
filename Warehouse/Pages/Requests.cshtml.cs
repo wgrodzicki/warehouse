@@ -18,7 +18,6 @@ public class RequestsModel : PageModel
 	public string AutoOpenRequestRefusalModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
 
-
 	private IConfiguration _configuration;
 
 	public RequestsModel(IConfiguration configuration)
@@ -249,6 +248,9 @@ public class RequestsModel : PageModel
 		return Page();
 	}
 
+	/// <summary>
+	/// Populates the list of requests to be displayed in the main table.
+	/// </summary>
 	private void PopulateRequests()
 	{
 		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))

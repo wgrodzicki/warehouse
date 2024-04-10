@@ -26,7 +26,6 @@ public class ItemsModel : PageModel
 	public string AutoOpenRequestConfirmModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
 
-
 	private IConfiguration _configuration;
 
     public ItemsModel(IConfiguration configuration)
