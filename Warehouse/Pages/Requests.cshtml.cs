@@ -39,7 +39,13 @@ public class RequestsModel : PageModel
 		return Page();
     }
 
-	public IActionResult OnPostManageRequest()
+    public IActionResult OnPostAccessData()
+    {
+		AccessData = true;
+		return new RedirectToPageResult("Index");
+    }
+
+    public IActionResult OnPostManageRequest()
 	{
 		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
 		{

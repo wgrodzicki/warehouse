@@ -55,6 +55,12 @@ public class ItemsModel : PageModel
 		return Page();
     }
 
+	public IActionResult OnPostAccessData()
+	{
+		AccessData = true;
+        return new RedirectToPageResult("Index");
+    }
+
     public IActionResult OnPostAddItem()
     {
         if (!ModelState.IsValid)

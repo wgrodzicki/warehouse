@@ -2,12 +2,14 @@
 
 public static class Helpers
 {
-	public static UserRole CurrentUserRole { get; set; }
-	public static List<ItemToDisplay> CurrentlyDisplayedItems { get; set; }
+	public static UserRole CurrentUserRole { get; set; } = UserRole.None;
+	public static bool AccessData { get; set; } = false;
+    public static List<ItemToDisplay> CurrentlyDisplayedItems { get; set; }
 	public static List<RequestToDisplay> CurrentlyDisplayedRequests { get; set; }
 
 	public enum UserRole
 	{
+		None,
 		Coordinator,
 		Employee
 	}

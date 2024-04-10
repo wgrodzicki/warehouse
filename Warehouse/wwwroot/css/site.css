@@ -8,8 +8,9 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+hr {
+    border-top: 1px solid black;
+    opacity: 1
 }
 
 html {
@@ -18,5 +19,93 @@ html {
 }
 
 body {
+  background-color: lightgray;
   margin-bottom: 60px;
+}
+
+.greeting {
+    margin-top: 60px;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-primary {
+    background-color: chocolate;
+    border-color: chocolate;
+    border-width: 2px;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: saddlebrown;
+    border-color: saddlebrown;
+}
+
+.btn-sm {
+    font-size: 18px;
+    border: none;
+    background-color: transparent;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 12px;
+}
+
+.btn-danger {
+    background-color: firebrick;
+    border-color: firebrick;
+}
+
+.btn-danger:hover {
+    background-color: darkred;
+    border-color: darkred;
+}
+
+.btn-index {
+    width: 100%;
+}
+
+.btn-wider {
+    width: 70%;
+    margin-bottom: 10px;
+}
+
+.view-title {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.table {
+    border-color: black;
+}
+
+.footer {
+    background-color: #c2c2c2;
+}
+
+.modal-content {
+    background-color: lightgray;
+}
+
+.modal-header, .modal-footer {
+    border: none;
+}
+
+#navbar {
+    background-color: saddlebrown;
+}
+
+#form-data-access {
+    border: none;
+    background-color:transparent;
+}
+
+#search-input {
+    margin-bottom: 10px;
+}
+
+#modal-add-item-btn {
+    margin-bottom: 30px;
 }

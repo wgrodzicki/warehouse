@@ -2,18 +2,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.Sqlite;
 using Warehouse.Data;
-using Warehouse.Helpers;
+using static Warehouse.Helpers.Helpers;
 
 namespace Warehouse.Pages;
 
 public class IndexModel : PageModel
 {
-    public bool CoordinatorRoleChosen { get; set; } = false;
-	private IConfiguration _configuration;
-
+	private IConfiguration _configuration; 
     public IndexModel(IConfiguration configuration)
     {
         _configuration = configuration;
+
+        if (AccessData)
+        {
+			CurrentUserRole = UserRole.Coordinator;
+			AccessData = false;
+		}
+        else
+        {
+			CurrentUserRole = UserRole.None;
+		}
     }
 
 	public void OnGet()
@@ -44,15 +52,14 @@ public class IndexModel : PageModel
 
     public IActionResult OnPostCoordinator()
     {
-        Helpers.Helpers.CurrentUserRole = Helpers.Helpers.UserRole.Coordinator;
-        CoordinatorRoleChosen = true;
+        CurrentUserRole = UserRole.Coordinator;
         return Page();
         
     }
 
     public IActionResult OnPostEmployee()
     {
-        Helpers.Helpers.CurrentUserRole = Helpers.Helpers.UserRole.Employee;
+        CurrentUserRole = UserRole.Employee;
         return new RedirectToPageResult("Items");
     }
 }

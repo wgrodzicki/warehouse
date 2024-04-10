@@ -6,16 +6,16 @@
 
 @* Request confirm modal *@
 <div class="modal fade" id="modal-request-confirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-request-confirm-label" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h1 class="modal-title fs-5" id="modal-request-confirm-label">Order item</h1>
 				<button type="button" class="btn-close" id="modal-request-confirm-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
+			<div class="modal-body text-center">
 				<div class="row">
 					<div class="col-md-12">
-						<h3>Request created!</h3>
+						<h4>Request created!</h4>
 					</div>
 				</div>
 			</div>
@@ -28,14 +28,14 @@
 
 @* Order item modal *@
 <div class="modal fade" id="modal-order-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-order-item-label" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-lg">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="OrderItem">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="modal-order-item-label">Order item</h1>
 					<button type="button" class="btn-close" id="modal-order-item-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body text-center">
 					<div class="row">
 						<div class="col-md-12">
 							<table class="table" id="table-order-item">
@@ -90,14 +90,14 @@
 
 @* Edit item modal *@
 <div class="modal fade" id="modal-edit-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-edit-item-label" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-xl">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="UpdateItem">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="modal-edit-item-label">Edit item</h1>
 					<button type="button" class="btn-close" id="modal-edit-item-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body text-center">
 					<div class="row">
 						<div class="col-md-12">
 							<table class="table" id="table-edit-item">
@@ -186,14 +186,14 @@
 
 @* Add item modal *@
 <div class="modal fade" id="modal-add-item" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-add-item-label" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-xl">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="AddItem">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="modal-add-item-label">Add item</h1>
 					<button type="button" class="btn-close" id="modal-add-item-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body text-center">
 					<div class="row">
 						<div class="col-md-12">
 							<table class="table" id="table-add-item">
@@ -283,88 +283,104 @@
 @* Main part *@
 <div container class="text-center">
 	<div class="row">
+		<div class="row justify-content-center">
+			<div class="col-6 view-title">
+				@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
+				{
+					<h4>Items - Coordinator's view</h4>
+					<hr />
+				}
+				else
+				{
+					<h4>Items - Employee's view</h4>
+					<hr>
+				}
+			</div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-2">
 			@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
 			{
-				<button class="btn btn-primary" id="modal-add-item-btn" data-bs-toggle="modal" data-bs-target="#modal-add-item">Add item</button>
+				<button class="btn btn-primary btn-wider" id="modal-add-item-btn" data-bs-toggle="modal" data-bs-target="#modal-add-item">Add item</button>
 				<input type="hidden" id="modal-add-item-trigger" value="@Model.AutoOpenAddItemModal" />
 			}
 			<form method="post" asp-page-handler="SearchItem">
 				<div class="form-group">
 					<label asp-for="ItemNameToSearchFor" class="control-label">Search item by name</label>
-					<input type="text" asp-for="ItemNameToSearchFor" class="form-control" />
+					<input type="text" asp-for="ItemNameToSearchFor" class="form-control" id="search-input" />
 				</div>
 				<div class="form-group">
-					<input type="submit" value="Search" class="btn btn-primary" />
+					<input type="submit" class="btn btn-primary btn-wider" value="Search" />
 				</div>
 			</form>
-			<a class="btn btn-secondary" asp-area="" asp-page="/Items">Revert</a>
+			<a class="btn btn-secondary btn-wider" asp-area="" asp-page="/Items">Revert</a>
 		</div>
-		<div class="col-10">
-			<table class="table" id="table-items">
+		<div class="col-10 table-responsive">
+			<table class="table table-hover" id="table-items">
 				<thead>
 					<tr>
 						@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Employee)
 						{
 							<th scope="col"></th>
 						}
-						<th scope="col">
+						<th scope="col" class="col-1">
 							ID
 							<form method="post" asp-page-handler="SortId">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Name
 							<form method="post" asp-page-handler="SortName">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Item Group
 							<form method="post" asp-page-handler="SortItemGroup">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Unit
 							<form method="post" asp-page-handler="SortUnit">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Quantity
 							<form method="post" asp-page-handler="SortQuantity">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-2">
 							Price (w/o VAT)
 							<form method="post" asp-page-handler="SortPrice">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Status
 							<form method="post" asp-page-handler="SortStatus">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Location
 							<form method="post" asp-page-handler="SortStorage">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Contact Person
 							<form method="post" asp-page-handler="SortContact">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
@@ -388,7 +404,7 @@
 								<td>
 									@if (item.Quantity > 0)
 									{
-										<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-order-item">Order</button>
+										<button class="btn btn-primary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-order-item">Order</button>
 										<input type="hidden" class="modal-order-trigger" id="@item.Id" value="@Model.AutoOpenOrderItemModal" />
 									}
 								</td>
@@ -406,13 +422,13 @@
 							@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
 							{
 								<td>
-									<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-edit-item">Edit</button>
+									<button class="btn btn-primary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-edit-item">Edit</button>
 									<input type="hidden" class="modal-edit-trigger" id="@item.Id" value="@Model.AutoOpenEditItemModal" />
 								</td>
 								<td>
 									<form method="post" asp-page-handler="DeleteItem">
 										<input type="hidden" asp-for="ItemIdToDelete" value="@item.Id">
-										<input type="submit" class="btn btn-secondary" value="Delete">
+										<input type="submit" class="btn btn-danger" value="Delete">
 									</form>
 								</td>
 							}

@@ -6,14 +6,14 @@
 
 @* Request modal *@
 <div class="modal fade" id="modal-request" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-request-label" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-xl">
 		<div class="modal-content">
 			<form method="post" asp-page-handler="ManageRequest">
 				<div class="modal-header">
 					<h1 class="modal-title fs-5" id="modal-request-label">Manage Request</h1>
 					<button type="button" class="btn-close" id="modal-request-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body text-center">
 					<div class="row">
 						<div class="col-md-12">
 							<table class="table" id="table-request">
@@ -88,80 +88,91 @@
 @* Main part *@
 <div container class="text-center">
 	<div class="row">
+		<div class="row justify-content-center">
+			<div class="col-6 view-title">
+				@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
+				{
+					<h4>Requests - Coordinator's view</h4>
+					<hr />
+				}
+			</div>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-2">
 			<form method="post" asp-page-handler="SearchRequest">
 				<div class="form-group">
 					<label asp-for="RequestIdToSearchFor" class="control-label">Search request by ID</label>
-					<input type="number" asp-for="RequestIdToSearchFor" class="form-control" min="0" value="" />
+					<input type="number" asp-for="RequestIdToSearchFor" class="form-control" id="search-input" min="0" value="" />
 				</div>
 				<div class="form-group">
-					<input type="submit" value="Search" class="btn btn-primary" />
+					<input type="submit" class="btn btn-primary btn-wider" value="Search" />
 				</div>
 			</form>
-			<a class="btn btn-secondary" asp-area="" asp-page="/Requests">Revert</a>
+			<a class="btn btn-secondary btn-wider" asp-area="" asp-page="/Requests">Revert</a>
 		</div>
-		<div class="col-10">
+		<div class="col-10 table-responsive">
 			<table class="table" id="table-requests">
 				<thead>
 					<tr>
 						<th scope="col"></th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							ID
 							<form method="post" asp-page-handler="SortId">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Employee name
 							<form method="post" asp-page-handler="SortEmployeeName">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Item
 							<form method="post" asp-page-handler="SortItem">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Unit
 							<form method="post" asp-page-handler="SortUnit">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Quantity
 							<form method="post" asp-page-handler="SortQuantity">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-3">
 							Total price (w/o VAT)
 							<form method="post" asp-page-handler="SortPrice">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Employee Comment
 							<form method="post" asp-page-handler="SortCommentEmployee">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Coordinator Comment
 							<form method="post" asp-page-handler="SortCommentCoordinator">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↓" />
 							</form>
 						</th>
-						<th scope="col">
+						<th scope="col" class="col-1">
 							Status
 							<form method="post" asp-page-handler="SortStatus">
 								<input type="submit" class="btn-sm" asp-for="SortingMode" value="↑" />
@@ -178,7 +189,7 @@
 							<td>
 								@if (request.Status != "Accepted" && request.Status != "Rejected")
 								{
-									<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@request.Id" data-bs-toggle="modal" data-bs-target="#modal-request">Open</button>
+									<button class="btn btn-primary" id="@Model.TableRowCounter" value="@request.Id" data-bs-toggle="modal" data-bs-target="#modal-request">Open</button>
 									<input type="hidden" class="modal-request-trigger" id="@request.Id" value="@Model.AutoOpenRequestModal" />
 								}
 							</td>

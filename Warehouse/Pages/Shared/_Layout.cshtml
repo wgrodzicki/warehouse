@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="~/Warehouse.styles.css" asp-append-version="true" />
 </head>
 <body>
-@*     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3" id="navbar">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Warehouse</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -20,25 +20,36 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            @if (Helpers.Helpers.CurrentUserRole != Helpers.Helpers.UserRole.None)
+                            {
+                                <a class="nav-link text-white" asp-area="" asp-page="/Index">Roles</a>
+                            }
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            @if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Coordinator)
+                            {
+                                @if (this.ViewData["Title"].ToString() != "Warehouse")
+                                {
+                                    <form method="post" asp-page-handler="AccessData">
+                                        <input class="nav-link text-white" id="form-data-access" type="submit" value="Data access"/>
+                                    </form>
+                                }
+                            }
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-    </header> *@
+    </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-muted">
         <div class="container">
-            &copy; 2024 - Warehouse - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2024 - Warehouse - by Wojciech Grodzicki
         </div>
     </footer>
 
