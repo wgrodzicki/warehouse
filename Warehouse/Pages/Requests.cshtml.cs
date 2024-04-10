@@ -15,7 +15,9 @@ public class RequestsModel : PageModel
 	[BindProperty] public string SortingMode { get; set; }
 	public List<string> RequestStatusNames { get; set; }
 	public string AutoOpenRequestModal { get; set; }
+	public string AutoOpenRequestRefusalModal { get; set; }
 	public int TableRowCounter { get; set; } = 0;
+
 
 	private IConfiguration _configuration;
 
@@ -28,6 +30,7 @@ public class RequestsModel : PageModel
 		RequestStatusNames = new List<string>();
 
 		AutoOpenRequestModal = "no";
+		AutoOpenRequestRefusalModal = "no";
 	}
 
 	public IActionResult OnGet()
@@ -51,7 +54,17 @@ public class RequestsModel : PageModel
 		{
 			connection.Open();
 
-			int itemId = WarehouseRepository.GetItemIdByItemName(connection, RequestToManage.Item);
+			// Get item id
+			string itemIdTextual = "";
+			for (int i = 1; i < RequestToManage.Item.Length; i++)
+			{
+				if (RequestToManage.Item[i].ToString() == " ")
+					break;
+
+				itemIdTextual += RequestToManage.Item[i];
+			}
+			int itemId = int.Parse(itemIdTextual);
+
 			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, RequestToManage.Status);
 
 			if (itemId < 0 || statusId < 0)
@@ -87,6 +100,14 @@ public class RequestsModel : PageModel
 			ItemModel itemToUpdate = WarehouseRepository.GetItemByItemId(connection, request.ItemId);
 			itemToUpdate.Quantity -= request.Quantity;
 
+			if (itemToUpdate.Quantity < 0)
+			{
+				request.StatusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
+				WarehouseRepository.UpdateRequest(connection, request, request.Id);
+				AutoOpenRequestRefusalModal = "yes";
+				return OnGet();
+			}
+				
 			WarehouseRepository.UpdateItem(connection, itemToUpdate, request.ItemId);
 		}
 		return OnGet();
@@ -109,7 +130,7 @@ public class RequestsModel : PageModel
 			{
 				Id = request.Id,
 				EmployeeName = request.EmployeeName,
-				Item = WarehouseRepository.GetItemNameByItemId(connection, request.ItemId),
+				Item = $"#{request.ItemId} {WarehouseRepository.GetItemNameByItemId(connection, request.ItemId)}",
 				Unit = WarehouseRepository.GetUnitNameByItemId(connection, request.ItemId),
 				Quantity = request.Quantity,
 				TotalPriceNoVat = request.PriceNoVat,
@@ -242,7 +263,7 @@ public class RequestsModel : PageModel
 				{
 					Id = request.Id,
 					EmployeeName = request.EmployeeName,
-					Item = WarehouseRepository.GetItemNameByItemId(connection, request.ItemId),
+					Item = $"#{request.ItemId} {WarehouseRepository.GetItemNameByItemId(connection, request.ItemId)}",
 					Unit = WarehouseRepository.GetUnitNameByItemId(connection, request.ItemId),
 					Quantity = request.Quantity,
 					TotalPriceNoVat = request.PriceNoVat,

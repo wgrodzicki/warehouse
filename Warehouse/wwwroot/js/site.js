@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.title == "Warehouse - Requests") {
         getStatusFromRequestModalDropdown();
         populateRequestModal();
+        checkAutoOpenRequestRefusalModal();
     }
 });
 
@@ -217,6 +218,23 @@ function checkAutoOpenRequestConfirmModal() {
 
     if (modalRequestConfirmTrigger.value == "yes") {
         modalRequestConfirmTrigger.click();
+    }
+}
+
+// Automatically opens the request refusal modal after trying to accept an invalid request.
+function checkAutoOpenRequestRefusalModal() {
+    let modalRequestRefusalTrigger = document.getElementById("modal-request-refusal-trigger");
+
+    document.getElementById("modal-request-refusal-close-sign").addEventListener("click", () => {
+        modalRequestRefusalTrigger.value = "no";
+    });
+
+    document.getElementById("modal-request-refusal-close-btn").addEventListener("click", () => {
+        modalRequestRefusalTrigger.value = "no";
+    });
+
+    if (modalRequestRefusalTrigger.value == "yes") {
+        modalRequestRefusalTrigger.click();
     }
 }
 

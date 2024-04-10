@@ -4,6 +4,28 @@
 	ViewData["Title"] = "Warehouse - Requests";
 }
 
+@* Request refusal modal *@
+<div class="modal fade" id="modal-request-refusal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-request-refusal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modal-request-refusal-label">Manage request</h1>
+				<button type="button" class="btn-close" id="modal-request-refusal-close-sign" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<div class="row">
+					<div class="col-md-12">
+						<h4>Request invalid, not enough items in the warehouse!</h4>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" id="modal-request-refusal-close-btn" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 @* Request modal *@
 <div class="modal fade" id="modal-request" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-request-label" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-xl">
@@ -207,5 +229,6 @@
 				</tbody>
 			</table>
 		</div>
+		<input type="hidden" id="modal-request-refusal-trigger" value="@Model.AutoOpenRequestRefusalModal" data-bs-toggle="modal" data-bs-target="#modal-request-refusal" />
 	</div>
 </div>
