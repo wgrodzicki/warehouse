@@ -81,10 +81,6 @@ public class RequestsModel : PageModel
 			ItemModel itemToUpdate = WarehouseRepository.GetItemByItemId(connection, request.ItemId);
 			itemToUpdate.Quantity -= request.Quantity;
 
-			// Delete item if sold out
-			if (itemToUpdate.Quantity <= 0)
-				WarehouseRepository.DeleteItem(connection, request.ItemId);
-
 			WarehouseRepository.UpdateItem(connection, itemToUpdate, request.ItemId);
 		}
 		return OnGet();

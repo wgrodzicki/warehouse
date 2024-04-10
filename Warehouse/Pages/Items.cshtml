@@ -386,8 +386,11 @@
 							@if (Helpers.Helpers.CurrentUserRole == Helpers.Helpers.UserRole.Employee)
 							{
 								<td>
-									<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-order-item">Order</button>
-									<input type="hidden" class="modal-order-trigger" id="@item.Id" value="@Model.AutoOpenOrderItemModal" />
+									@if (item.Quantity > 0)
+									{
+										<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@item.Id" data-bs-toggle="modal" data-bs-target="#modal-order-item">Order</button>
+										<input type="hidden" class="modal-order-trigger" id="@item.Id" value="@Model.AutoOpenOrderItemModal" />
+									}
 								</td>
 							}
 							<td>@item.Id</td>

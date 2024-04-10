@@ -176,8 +176,11 @@
 						Model.TableRowCounter++;
 						<tr>
 							<td>
-								<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@request.Id" data-bs-toggle="modal" data-bs-target="#modal-request">Open</button>
-								<input type="hidden" class="modal-request-trigger" id="@request.Id" value="@Model.AutoOpenRequestModal" />
+								@if (request.Status != "Accepted" && request.Status != "Rejected")
+								{
+									<button class="btn btn-secondary" id="@Model.TableRowCounter" value="@request.Id" data-bs-toggle="modal" data-bs-target="#modal-request">Open</button>
+									<input type="hidden" class="modal-request-trigger" id="@request.Id" value="@Model.AutoOpenRequestModal" />
+								}
 							</td>
 							<td>@request.Id</td>
 							<td>@request.EmployeeName</td>
