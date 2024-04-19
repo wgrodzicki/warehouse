@@ -11,6 +11,6 @@ public class RequestModel
     public int Quantity { get; set; }
     public decimal PriceNoVat { get; set; }
     public string? CommentEmployee { get; set; }
-	public string? CommentCoordinator { get; set; }
-	public int StatusId { get; set; }
+    public string? CommentCoordinator { get; set; }
+    public int StatusId { get; set; }
 }

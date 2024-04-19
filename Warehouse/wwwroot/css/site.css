@@ -1,23 +1,23 @@
 /*General*/
 
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  background-color: lightgray;
-  margin-bottom: 60px;
+    background-color: lightgray;
+    margin-bottom: 60px;
 }
 
 hr {
@@ -37,10 +37,10 @@ hr {
     border-width: 2px;
 }
 
-.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
-    background-color: saddlebrown;
-    border-color: saddlebrown;
-}
+    .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+        background-color: saddlebrown;
+        border-color: saddlebrown;
+    }
 
 .btn-sm {
     font-size: 18px;
@@ -58,10 +58,10 @@ hr {
     border-color: firebrick;
 }
 
-.btn-danger:hover {
-    background-color: darkred;
-    border-color: darkred;
-}
+    .btn-danger:hover {
+        background-color: darkred;
+        border-color: darkred;
+    }
 
 .btn-index {
     width: 100%;
@@ -113,7 +113,7 @@ hr {
 
 #form-data-access {
     border: none;
-    background-color:transparent;
+    background-color: transparent;
 }
 
 #search-input {

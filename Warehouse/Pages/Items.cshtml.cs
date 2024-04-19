@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.Sqlite;
-using Warehouse.Models;
 using Warehouse.Data;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Warehouse.Models;
 using static Warehouse.Helpers.Helpers;
 
 namespace Warehouse.Pages;
@@ -11,52 +11,52 @@ namespace Warehouse.Pages;
 public class ItemsModel : PageModel
 {
     [BindProperty] public List<ItemToDisplay> ItemsToDisplay { get; set; }
-	[BindProperty] public ItemToDisplay ItemToAdd { get; set; }
-	[BindProperty] public ItemToDisplay ItemToUpdate { get; set; }
-	[BindProperty] public RequestModel PurchaseRequest { get; set; }
-	[BindProperty] public int ItemIdToDelete { get; set; }
-	[BindProperty] public string ItemNameToSearchFor { get; set; }
-	[BindProperty] public string SortingMode { get; set; }
+    [BindProperty] public ItemToDisplay ItemToAdd { get; set; }
+    [BindProperty] public ItemToDisplay ItemToUpdate { get; set; }
+    [BindProperty] public RequestModel PurchaseRequest { get; set; }
+    [BindProperty] public int ItemIdToDelete { get; set; }
+    [BindProperty] public string ItemNameToSearchFor { get; set; }
+    [BindProperty] public string SortingMode { get; set; }
 
-	public List<string> ItemGroupNames { get; set; }
-	public List<string> UnitNames { get; set; }
+    public List<string> ItemGroupNames { get; set; }
+    public List<string> UnitNames { get; set; }
     public string AutoOpenAddItemModal { get; set; }
-	public string AutoOpenEditItemModal { get; set; }
-	public string AutoOpenOrderItemModal { get; set; }
-	public string AutoOpenRequestConfirmModal { get; set; }
-	public int TableRowCounter { get; set; } = 0;
+    public string AutoOpenEditItemModal { get; set; }
+    public string AutoOpenOrderItemModal { get; set; }
+    public string AutoOpenRequestConfirmModal { get; set; }
+    public int TableRowCounter { get; set; } = 0;
 
-	private IConfiguration _configuration;
+    private IConfiguration _configuration;
 
     public ItemsModel(IConfiguration configuration)
     {
         _configuration = configuration;
 
         ItemsToDisplay = new List<ItemToDisplay>();
-		ItemToAdd = new ItemToDisplay();
-		ItemToUpdate = new ItemToDisplay();
-		PurchaseRequest = new RequestModel();
-		ItemGroupNames = new List<string>();
+        ItemToAdd = new ItemToDisplay();
+        ItemToUpdate = new ItemToDisplay();
+        PurchaseRequest = new RequestModel();
+        ItemGroupNames = new List<string>();
         UnitNames = new List<string>();
 
         AutoOpenAddItemModal = "no";
-		AutoOpenEditItemModal = "no";
-		AutoOpenOrderItemModal = "no";
-		AutoOpenRequestConfirmModal = "no";
-	}
+        AutoOpenEditItemModal = "no";
+        AutoOpenOrderItemModal = "no";
+        AutoOpenRequestConfirmModal = "no";
+    }
 
     public IActionResult OnGet()
     {
-		PopulateItems();
+        PopulateItems();
 
-		CurrentlyDisplayedItems = ItemsToDisplay;
+        CurrentlyDisplayedItems = ItemsToDisplay;
 
-		return Page();
+        return Page();
     }
 
-	public IActionResult OnPostAccessData()
-	{
-		AccessData = true;
+    public IActionResult OnPostAccessData()
+    {
+        AccessData = true;
         return new RedirectToPageResult("Index");
     }
 
@@ -64,17 +64,17 @@ public class ItemsModel : PageModel
     {
         if (!ModelState.IsValid)
         {
-			// Validate only the Add item form
-			foreach (var state in ModelState)
-			{
-				if (state.Key.Contains("ItemToAdd") && state.Value.ValidationState == ModelValidationState.Invalid)
+            // Validate only the Add item form
+            foreach (var state in ModelState)
+            {
+                if (state.Key.Contains("ItemToAdd") && state.Value.ValidationState == ModelValidationState.Invalid)
                 {
-					AutoOpenAddItemModal = "yes";
-					return OnGet();
-				}
-			}
-		}
-		AutoOpenAddItemModal = "no";
+                    AutoOpenAddItemModal = "yes";
+                    return OnGet();
+                }
+            }
+        }
+        AutoOpenAddItemModal = "no";
 
         using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
         {
@@ -99,34 +99,34 @@ public class ItemsModel : PageModel
 
             WarehouseRepository.AddItem(connection, item);
         }
-	    return OnGet();
-	}
+        return OnGet();
+    }
 
     public IActionResult OnPostDeleteItem()
     {
-		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
         {
             connection.Open();
             WarehouseRepository.DeleteItem(connection, ItemIdToDelete);
         }
-		return OnGet();
-	}
+        return OnGet();
+    }
 
     public IActionResult OnPostUpdateItem()
     {
-		if (!ModelState.IsValid)
-		{
-			// Validate only the Edit item form
-			foreach (var state in ModelState)
-			{
-				if (state.Key.Contains("ItemToUpdate") && state.Value.ValidationState == ModelValidationState.Invalid)
-				{
-					AutoOpenEditItemModal = "yes";
-					return OnGet();
-				}
-			}
-		}
-		AutoOpenEditItemModal = "no";
+        if (!ModelState.IsValid)
+        {
+            // Validate only the Edit item form
+            foreach (var state in ModelState)
+            {
+                if (state.Key.Contains("ItemToUpdate") && state.Value.ValidationState == ModelValidationState.Invalid)
+                {
+                    AutoOpenEditItemModal = "yes";
+                    return OnGet();
+                }
+            }
+        }
+        AutoOpenEditItemModal = "no";
 
         using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
         {
@@ -135,237 +135,237 @@ public class ItemsModel : PageModel
             int itemGroupId = WarehouseRepository.GetItemGroupIdByItemGroupName(connection, ItemToUpdate.ItemGroup);
             int unitId = WarehouseRepository.GetUnitIdByUnitName(connection, ItemToUpdate.Unit);
 
-			if (itemGroupId < 0 || unitId < 0)
-				return OnGet();
+            if (itemGroupId < 0 || unitId < 0)
+                return OnGet();
 
-			ItemModel item = new ItemModel
-			{
-				Name = ItemToUpdate.Name,
-				ItemGroupId = itemGroupId,
-				UnitId = unitId,
-				Quantity = ItemToUpdate.Quantity,
-				PriceNoVat = ItemToUpdate.PriceNoVat,
-				Status = ItemToUpdate.Status,
-				StorageLocation = ItemToUpdate.StorageLocation,
-				ContactPerson = ItemToUpdate.ContactPerson
-			};
+            ItemModel item = new ItemModel
+            {
+                Name = ItemToUpdate.Name,
+                ItemGroupId = itemGroupId,
+                UnitId = unitId,
+                Quantity = ItemToUpdate.Quantity,
+                PriceNoVat = ItemToUpdate.PriceNoVat,
+                Status = ItemToUpdate.Status,
+                StorageLocation = ItemToUpdate.StorageLocation,
+                ContactPerson = ItemToUpdate.ContactPerson
+            };
 
-			WarehouseRepository.UpdateItem(connection, item, ItemToUpdate.Id);
+            WarehouseRepository.UpdateItem(connection, item, ItemToUpdate.Id);
         }
         return OnGet();
     }
 
-	public IActionResult OnPostOrderItem()
-	{
-		if (!ModelState.IsValid)
-		{
-			// Validate only the Order item form
-			foreach (var state in ModelState)
-			{
-				if (state.Key.Contains("PurchaseRequest") && state.Value.ValidationState == ModelValidationState.Invalid)
-				{
-					AutoOpenOrderItemModal = "yes";
-					return OnGet();
-				}
-			}
-		}
-		AutoOpenOrderItemModal = "no";
-		AutoOpenRequestConfirmModal = "yes";
+    public IActionResult OnPostOrderItem()
+    {
+        if (!ModelState.IsValid)
+        {
+            // Validate only the Order item form
+            foreach (var state in ModelState)
+            {
+                if (state.Key.Contains("PurchaseRequest") && state.Value.ValidationState == ModelValidationState.Invalid)
+                {
+                    AutoOpenOrderItemModal = "yes";
+                    return OnGet();
+                }
+            }
+        }
+        AutoOpenOrderItemModal = "no";
+        AutoOpenRequestConfirmModal = "yes";
 
-		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
-		{
-			connection.Open();
+        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        {
+            connection.Open();
 
-			PurchaseRequest.PriceNoVat = WarehouseRepository.GetItemPriceByItemId(connection, PurchaseRequest.ItemId) * PurchaseRequest.Quantity;
+            PurchaseRequest.PriceNoVat = WarehouseRepository.GetItemPriceByItemId(connection, PurchaseRequest.ItemId) * PurchaseRequest.Quantity;
 
-			int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
+            int statusId = WarehouseRepository.GetRequestStatusIdByRequestStatusName(connection, "New");
 
-			if (statusId > 0)
-				PurchaseRequest.StatusId = statusId;
-			else
-				PurchaseRequest.StatusId = 1;
+            if (statusId > 0)
+                PurchaseRequest.StatusId = statusId;
+            else
+                PurchaseRequest.StatusId = 1;
 
-			WarehouseRepository.AddRequest(connection, PurchaseRequest);
-		}
+            WarehouseRepository.AddRequest(connection, PurchaseRequest);
+        }
 
-		return OnGet();
-	}
+        return OnGet();
+    }
 
-	public IActionResult OnPostSearchItem()
-	{
-		if (String.IsNullOrEmpty(ItemNameToSearchFor))
-		{
-			return OnGet();
-		}
+    public IActionResult OnPostSearchItem()
+    {
+        if (String.IsNullOrEmpty(ItemNameToSearchFor))
+        {
+            return OnGet();
+        }
 
-		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
-		{
-			connection.Open();
-			List<ItemModel> items = new List<ItemModel>();
-			WarehouseRepository.GetItemsByItemName(connection, ItemNameToSearchFor, items);
+        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        {
+            connection.Open();
+            List<ItemModel> items = new List<ItemModel>();
+            WarehouseRepository.GetItemsByItemName(connection, ItemNameToSearchFor, items);
 
-			foreach (ItemModel item in items)
-			{
-				ItemsToDisplay.Add(new ItemToDisplay
-				{
-					Id = item.Id,
-					Name = item.Name,
-					ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
-					Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
-					Quantity = item.Quantity,
-					PriceNoVat = item.PriceNoVat,
-					Status = item.Status,
-					StorageLocation = item.StorageLocation,
-					ContactPerson = item.ContactPerson,
-				});
-			}
+            foreach (ItemModel item in items)
+            {
+                ItemsToDisplay.Add(new ItemToDisplay
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
+                    Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
+                    Quantity = item.Quantity,
+                    PriceNoVat = item.PriceNoVat,
+                    Status = item.Status,
+                    StorageLocation = item.StorageLocation,
+                    ContactPerson = item.ContactPerson,
+                });
+            }
 
-			WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
-			WarehouseRepository.GetUnitNames(connection, UnitNames);
-		}
+            WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
+            WarehouseRepository.GetUnitNames(connection, UnitNames);
+        }
 
-		CurrentlyDisplayedItems = ItemsToDisplay;
+        CurrentlyDisplayedItems = ItemsToDisplay;
 
-		return Page();
-	}
+        return Page();
+    }
 
     public IActionResult OnPostSortId()
     {
-		ItemsToDisplay = CurrentlyDisplayedItems;
+        ItemsToDisplay = CurrentlyDisplayedItems;
 
-		if (SortingMode == "↑")
+        if (SortingMode == "↑")
             ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Id).ToList();
         else
             ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Id).ToList();
 
-		return Page();
+        return Page();
     }
 
-	public IActionResult OnPostSortName()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Name).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Name).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortItemGroup()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ItemGroup).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ItemGroup).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortUnit()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Unit).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Unit).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortQuantity()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Quantity).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Quantity).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortPrice()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.PriceNoVat).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.PriceNoVat).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortStatus()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Status).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Status).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortStorage()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.StorageLocation).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.StorageLocation).ToList();
-
-		return Page();
-	}
-
-	public IActionResult OnPostSortContact()
-	{
-		ItemsToDisplay = CurrentlyDisplayedItems;
-
-		if (SortingMode == "↑")
-			ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ContactPerson).ToList();
-		else
-			ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ContactPerson).ToList();
-
-		return Page();
-	}
-
-	/// <summary>
-	/// Populates dropdown lists and the list of items to be displayed in the main table.
-	/// </summary>
-	private void PopulateItems()
+    public IActionResult OnPostSortName()
     {
-		using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
-		{
-			connection.Open();
-			List<ItemModel> items = new List<ItemModel>();
-			WarehouseRepository.GetAllItems(connection, items);
+        ItemsToDisplay = CurrentlyDisplayedItems;
 
-			foreach (ItemModel item in items)
-			{
-				ItemsToDisplay.Add(new ItemToDisplay
-				{
-					Id = item.Id,
-					Name = item.Name,
-					ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
-					Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
-					Quantity = item.Quantity,
-					PriceNoVat = item.PriceNoVat,
-					Status = item.Status,
-					StorageLocation = item.StorageLocation,
-					ContactPerson = item.ContactPerson,
-				});
-			}
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Name).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Name).ToList();
 
-			WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
-			WarehouseRepository.GetUnitNames(connection, UnitNames);
-		}
-	}
+        return Page();
+    }
+
+    public IActionResult OnPostSortItemGroup()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ItemGroup).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ItemGroup).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortUnit()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Unit).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Unit).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortQuantity()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Quantity).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Quantity).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortPrice()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.PriceNoVat).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.PriceNoVat).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortStatus()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.Status).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.Status).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortStorage()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.StorageLocation).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.StorageLocation).ToList();
+
+        return Page();
+    }
+
+    public IActionResult OnPostSortContact()
+    {
+        ItemsToDisplay = CurrentlyDisplayedItems;
+
+        if (SortingMode == "↑")
+            ItemsToDisplay = ItemsToDisplay.OrderBy(x => x.ContactPerson).ToList();
+        else
+            ItemsToDisplay = ItemsToDisplay.OrderByDescending(x => x.ContactPerson).ToList();
+
+        return Page();
+    }
+
+    /// <summary>
+    /// Populates dropdown lists and the list of items to be displayed in the main table.
+    /// </summary>
+    private void PopulateItems()
+    {
+        using (var connection = new SqliteConnection(_configuration.GetConnectionString("ConnectionString")))
+        {
+            connection.Open();
+            List<ItemModel> items = new List<ItemModel>();
+            WarehouseRepository.GetAllItems(connection, items);
+
+            foreach (ItemModel item in items)
+            {
+                ItemsToDisplay.Add(new ItemToDisplay
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    ItemGroup = WarehouseRepository.GetItemGroupNameByItemGroupId(connection, item.ItemGroupId),
+                    Unit = WarehouseRepository.GetUnitNameByUnitId(connection, item.UnitId),
+                    Quantity = item.Quantity,
+                    PriceNoVat = item.PriceNoVat,
+                    Status = item.Status,
+                    StorageLocation = item.StorageLocation,
+                    ContactPerson = item.ContactPerson,
+                });
+            }
+
+            WarehouseRepository.GetItemGroupNames(connection, ItemGroupNames);
+            WarehouseRepository.GetUnitNames(connection, UnitNames);
+        }
+    }
 }
