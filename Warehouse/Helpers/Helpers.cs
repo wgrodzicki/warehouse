@@ -1,7 +1,7 @@
 ﻿namespace Warehouse.Helpers;
 
 /// <summary>
-/// Containes helper static fields.
+/// Contains helper static fields.
 /// </summary>
 public static class Helpers
 {
